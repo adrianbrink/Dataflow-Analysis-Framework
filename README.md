@@ -2,12 +2,12 @@
 
 ## TODO
 - watch youtube videos or other resources to understand in-depth how dataflow analyses work with CFGs
-- create the analysis only for Live-Variable analysis intially
+- create the analysis only for Live-Variable analysis initially
 - write down the process for an analysis in words: Create CFG -> that creates the Lattices for every node and the powerlattice for the entire program
 - figure out which classes are needed:
     - Lattice
     - CFG
-        - something for the differnet types of nodes including entry and exit
+        - something for the different types of nodes including entry and exit
     - TransferFunctions
         - they need to model the actual transfer functions
     - abstract Analsysis
