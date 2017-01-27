@@ -25,6 +25,8 @@ public class ParserHelper {
         return statements;
     }
 
+    // TODO: This can't read in actual correct programs, but rather a formatted version. This is because I don't understand exactly how the parser throws errors.
+    // It splits the file into each line, parses the line and then adds all the lists together.
     private static List<String> readFile(File file) throws IOException {
         List<String> lines = new ArrayList<>();
         InputStream fs = new FileInputStream(file);

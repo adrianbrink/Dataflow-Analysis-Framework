@@ -1,24 +1,14 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
-import eu.adrianbrink.parser.Statement;
+import java.util.List;
 
 /**
  * Created by sly on 26/01/2017.
  */
-public class CFGNode {
-    private Statement statement;
-    private CFGNode next;
+public abstract class CFGNode {
+    public CFGNode() { }
 
-    public CFGNode(Statement statement, CFGNode next) {
-        this.statement = statement;
-        this.next = next;
-    }
+    public abstract void setNext(List<CFGNode> nodes);
 
-    public void setNext(CFGNode next) {
-        this.next = next;
-    }
-
-    public CFGNode getNext() {
-        return this.next;
-    }
+    public abstract List<CFGNode> getNext();
 }

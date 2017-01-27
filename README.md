@@ -17,7 +17,7 @@
     - should do M2T to output while source code
 - document the entire framework in the report
     - ask Jesper how we should structure the report. Should it be like documentation or explanation?
-    
+- integrate GraphViz for easy printing of the CFG
 
 ## Goals
 1. Implement a simple Available Expression Analysis for a sample program
@@ -26,3 +26,8 @@
     - from simple to worklist
 4. Enable optimization to the source code
     - M2T transformations for the input code
+    
+    
+## Problems
+Do we need confluence points? None of the papers on the internet from other unis use confluence points.
+How do Confluence Points for while constructs work? How do the combine information when there is only one incoming edge.

@@ -6,26 +6,26 @@ public class If extends Statement {
     public final Statement s2;
 
     public If(int line, BoolExpression b, Statement s1, Statement s2) {
-	super(line);
-	this.b = b;
-	this.s1 = s1;
-	this.s2 = s2;
+		super(line);
+		this.b = b;
+		this.s1 = s1;
+		this.s2 = s2;
     }
 
     void pretty(Printer p) {
-	p.print("if (");
-	b.pretty(p);
-	p.print(")");
-	p.in();
-	p.newline();
-	s1.pretty(p);
-	p.out();
-	p.newline();
-	p.print("else");
-	p.in();
-	p.newline();
-	s2.pretty(p);
-	p.out();
+		p.print("if (");
+		b.pretty(p);
+		p.print(")");
+		p.in();
+		p.newline();
+		s1.pretty(p);
+		p.out();
+		p.newline();
+		p.print("else");
+		p.in();
+		p.newline();
+		s2.pretty(p);
+		p.out();
     }
 	
 	@Override
