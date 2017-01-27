@@ -32,13 +32,14 @@ public class CFG {
         }
 
         // find the last node by walking along all the next pointers and then add the exitNode
-//        CFGNode tmpNode = entryNode;
-//        while (tmpNode.getNext() != null) {
-//            tmpNode = (CFGNode) tmpNode.getNext();
-//        }
-//        List<CFGNode> exitNode = new ArrayList<CFGNode>();
-//        exitNode.add(new CFGExit());
-//        tmpNode.setNext(exitNode);
+        // TODO: Fix the code for appending the ending node
+        CFGNode tmpNode = entryNode;
+        while (tmpNode.getNext().get(0) != null) {
+            tmpNode = tmpNode.getNext().get(0);
+        }
+        List<CFGNode> exitNode = new ArrayList<CFGNode>();
+        exitNode.add(new CFGExit());
+        tmpNode.setNext(exitNode);
     }
 
     // takes the latest node that has been constructed and returns the last node that it created
@@ -68,8 +69,22 @@ public class CFG {
             falseNode.setNext(newConfluenceNodeList);
             return confluenceNode;
         } else if (statement instanceof While) {
-            return null;
+            CFGBranch expressionNode = new CFGBranch(((While)statement).b);
+            List<CFGNode> newNodeList = new ArrayList<CFGNode>();
+            newNodeList.add(expressionNode);
+            currentNode.setNext(newNodeList);
+            CFGConfluence confluenceNode = new CFGConfluence();
+            List<CFGNode> newConfluenceNodeList = new ArrayList<CFGNode>();
+            newConfluenceNodeList.add(confluenceNode);
+            // the order below is important because the first call to setNext assigns it to the first branch and when traversing the graph I only follow the 1st branches to get to an end
+            // we need to call .setNext() with the confluence point first to ensure that it ends up on the firstBranch
+            expressionNode.setNext(newConfluenceNodeList);
+            CFGNode trueNode = CFG.expandStatement(expressionNode, ((While) statement).s);
+            trueNode.setNext(newNodeList);
+            return confluenceNode;
         }
+        // unreachable
+        // TODO: Should probably throw an error.
         return null;
     }
 //
