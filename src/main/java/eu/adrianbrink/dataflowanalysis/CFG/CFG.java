@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by sly on 26/01/2017.
  */
+// TODO: Ideally the analysis class should not never interact with CFGNodes directly but only through the CFG class. I should try and hide that implementation from the client code.
 public class CFG {
     private List<CFGNode> cfgNodes;
 
