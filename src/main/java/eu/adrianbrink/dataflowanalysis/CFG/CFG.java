@@ -9,138 +9,77 @@ import java.util.List;
  * Created by sly on 26/01/2017.
  */
 public class CFG {
-    private CFGNode entryNode;
+    private List<CFGNode> cfgNodes;
 
-    public CFG(List<Statement> statements) {
-        this.entryNode = new CFGEntry();
-        CFG.constructCFG(entryNode, statements);
+    public CFG(List<CFGNode> cfgNodes, List<Statement> statements) {
+        this.cfgNodes = cfgNodes;
+        CFG.constructCFG(cfgNodes, statements);
     }
 
-    public CFGNode getEntryNode() {
-        return this.entryNode;
-    }
-
-    private static void constructCFG(CFGNode entryNode, List<Statement> statements) {
-        // this is to keep track of the latest node
-        // this assignment is dirty, since if it isn't initialised due to the first if statement then something is horribly broken
-
-        CFGNode currentNode = entryNode;
-
+    private static void constructCFG(List<CFGNode> cfgNodes, List<Statement> statements) {
+        // create EntryNode
+        CFGNode entryNode = new CFGNode(null);
+        // add EntryNode to cfgNodes
+        cfgNodes.add(entryNode);
+        // create List that will be passed in as the previous nodes
+        List<CFGNode> previousNodes = new ArrayList<>();
+        previousNodes.add(entryNode);
+        // go through all statements
         for (Statement statement : statements) {
-            CFGNode newCFGNode = CFG.expandStatement(currentNode, statement);
-            currentNode = newCFGNode;
+            List<CFGNode> createdNodes = CFG.expandStatement(cfgNodes, previousNodes, statement);
+            previousNodes = createdNodes;
         }
 
-        // find the last node by walking along all the next pointers and then add the exitNode
-        // TODO: Fix the code for appending the ending node
-        CFGNode tmpNode = entryNode;
-        while (tmpNode.getNext().get(0) != null) {
-            tmpNode = tmpNode.getNext().get(0);
+        CFGNode exitNode = new CFGNode(null);
+        cfgNodes.add(exitNode);
+        List<CFGNode> exitNodeList = new ArrayList<>();
+        exitNodeList.add(exitNode);
+        // set the previous nodes to point to the last node
+        for (CFGNode node : previousNodes) {
+            node.setNext(exitNodeList);
         }
-        List<CFGNode> exitNode = new ArrayList<CFGNode>();
-        exitNode.add(new CFGExit());
-        tmpNode.setNext(exitNode);
+        // set the last node to point to the previous node
+        for (CFGNode node : exitNodeList) {
+            node.setPrevious(previousNodes);
+        }
     }
 
-    // takes the latest node that has been constructed and returns the last node that it created
-    // TODO: expandStatement is misleading since it also deals with things that are expressions are sequences
-    private static CFGNode expandStatement(CFGNode currentNode, Statement statement) {
-        if (statement instanceof Assignment || statement instanceof Skip || statement instanceof Output) {
-            CFGStatement newNode = new CFGStatement(statement);
-            List<CFGNode> newNodeList = new ArrayList<CFGNode>();
+    private static List<CFGNode> expandStatement(List<CFGNode> cfgNodes, List<CFGNode> previousNodes, AST statement) {
+        if (statement instanceof Assignment || statement instanceof Skip || statement instanceof Output || statement instanceof Expression) {
+            CFGNode newNode = new CFGNode(statement);
+            cfgNodes.add(newNode);
+            newNode.setPrevious(previousNodes);
+            List<CFGNode> newNodeList = new ArrayList<>();
             newNodeList.add(newNode);
-            currentNode.setNext(newNodeList);
-            return newNode;
+            for (CFGNode node : previousNodes) {
+                node.setNext(newNodeList);
+            }
+            return newNodeList;
         } else if (statement instanceof Sequence) {
-            CFGNode leftNode = CFG.expandStatement(currentNode, ((Sequence) statement).s1);
-            CFGNode rightNode = CFG.expandStatement(leftNode, ((Sequence) statement).s2);
-            return rightNode;
+            List<CFGNode> firstNodes = CFG.expandStatement(cfgNodes, previousNodes, ((Sequence) statement).s1);
+            List<CFGNode> secondNodes = CFG.expandStatement(cfgNodes, firstNodes, ((Sequence) statement).s2);
+            return secondNodes;
         } else if (statement instanceof If) {
-            CFGBranch expressionNode = new CFGBranch(((If) statement).b);
-            List<CFGNode> newNodeList = new ArrayList<CFGNode>();
-            newNodeList.add(expressionNode);
-            currentNode.setNext(newNodeList);
-            CFGNode trueNode = CFG.expandStatement(expressionNode, ((If) statement).s1);
-            CFGNode falseNode = CFG.expandStatement(expressionNode, ((If) statement).s2);
-            CFGConfluence confluenceNode = new CFGConfluence();
-            List<CFGNode> newConfluenceNodeList = new ArrayList<CFGNode>();
-            newConfluenceNodeList.add(confluenceNode);
-            trueNode.setNext(newConfluenceNodeList);
-            falseNode.setNext(newConfluenceNodeList);
-            return confluenceNode;
+            List<CFGNode> ifNode = CFG.expandStatement(cfgNodes, previousNodes, ((If) statement).b);
+            List<CFGNode> trueBranch = CFG.expandStatement(cfgNodes, ifNode, ((If) statement).s1);
+            List<CFGNode> falseBranch = CFG.expandStatement(cfgNodes, ifNode, ((If) statement).s2);
+            List<CFGNode> newNodes = new ArrayList<>();
+            for (CFGNode node : trueBranch) {
+                newNodes.add(node);
+            }
+            for (CFGNode node : falseBranch) {
+                newNodes.add(node);
+            }
+            return newNodes;
         } else if (statement instanceof While) {
-            CFGBranch expressionNode = new CFGBranch(((While)statement).b);
-            List<CFGNode> newNodeList = new ArrayList<CFGNode>();
-            newNodeList.add(expressionNode);
-            currentNode.setNext(newNodeList);
-            CFGConfluence confluenceNode = new CFGConfluence();
-            List<CFGNode> newConfluenceNodeList = new ArrayList<CFGNode>();
-            newConfluenceNodeList.add(confluenceNode);
-            // the order below is important because the first call to setNext assigns it to the first branch and when traversing the graph I only follow the 1st branches to get to an end
-            // we need to call .setNext() with the confluence point first to ensure that it ends up on the firstBranch
-            expressionNode.setNext(newConfluenceNodeList);
-            CFGNode trueNode = CFG.expandStatement(expressionNode, ((While) statement).s);
-            trueNode.setNext(newNodeList);
-            return confluenceNode;
+            List<CFGNode> whileNode = CFG.expandStatement(cfgNodes, previousNodes, ((While) statement).b);
+            List<CFGNode> trueBranch = CFG.expandStatement(cfgNodes, whileNode, ((While) statement).s);
+            // trueBranches next pointer is set here, because only in the case of while do I already know the next pointer before another expansion happens
+            for (CFGNode node : trueBranch) {
+                node.setNext(whileNode);
+            }
+            return whileNode;
         }
-        // unreachable
-        // TODO: Should probably throw an error.
         return null;
     }
-//
-//        CFGNode exitNode = new CFGNode(null);
-//        currentNode.setNext(exitNode);
-
-//        for (int i = 0; i < statements.size(); i++) {
-//            if (i == 0) {
-//                // first real statement, append it to the entryNode
-//                CFGNode nextNode = new CFGNode(statements.get(i), null);
-//                entryNode.setNext(nextNode);
-//                currentNode = nextNode;
-//                continue;
-//            } else if (i == statements.size() - 1) {
-//                // last statement and hence the next node is the exit node
-//                CFGNode exitNode = new CFGNode(null, null);
-//                CFGNode nextNode = new CFGNode(statements.get(i), exitNode);
-//                currentNode.setNext(nextNode);
-//                return;
-//            } else {
-//                CFGNode nextNode = new CFGNode(statements.get(i), null);
-//                currentNode.setNext(nextNode);
-//                currentNode = currentNode.getNext();
-//                continue;
-//            }
-//        }
-//    }
-
-//    private static void expandStatement(List<Statement> statements, CFGNode entryNode) {
-//        Statement currentStatement = statements.remove(0);
-//        CFG.expandStatement(statements, entryNode, currentStatement);
-//    }
-//
-//    private static void expandStatement(List<Statement> statements, CFGNode currentNode, Statement currentStatement) {
-//        // base case
-//        if (statements.size() == 0) {
-//            return;
-//        }
-//
-//        if (currentStatement instanceof Assignment || currentStatement instanceof Skip || currentStatement instanceof Output) {
-//            // simple assignment node, can't recourse downwards and hence is the base case
-//            Statement nextStatement = statements.remove(0);
-//            CFGNode newCFGNode = new CFGNode(currentStatement);
-//            currentNode.setNext(newCFGNode);
-//            CFG.expandStatement(statements, newCFGNode, nextStatement);
-//        }
-//        } else if (statement instanceof Sequence) {
-//            // sequence-statement
-//
-//            return new CFGNode(statement);
-//        } else if (statement instanceof While) {
-//            // while-statement
-//            return new CFGNode(statement);
-//        } else {
-//            // if-statement
-//            return new CFGNode(statement);
-//        }
-//    }
 }
