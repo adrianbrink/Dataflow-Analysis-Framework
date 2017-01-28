@@ -7,7 +7,7 @@ import eu.adrianbrink.parser.{Expression, Variable}
   elements by using the binary relation(op) defined over a Set (polymorphic type [A]).
   In addition, to instantiate a lattice its bottom element is needed.
 */
-abstract class Lattice[A](val op: (LatticeElement[A], LatticeElement[A]) => LatticeElement[A],
+abstract class Lattice[A](private val op: (LatticeElement[A], LatticeElement[A]) => LatticeElement[A],
                           val bottom: LatticeElement[A]) {
   def computeCommon(x: LatticeElement[A], y: LatticeElement[A]): LatticeElement[A] = op(x, y)
 }
@@ -22,6 +22,6 @@ object Test extends App {
   val e1 = new LatticeElement[Expression](Set(new Variable(1, "ds")))
   val e2 = new LatticeElement[Expression](Set(new Variable(1, "ds")))
 
-  val e3 = availExprLat.op(e1, e2)
+  val e3 = availExprLat.computeCommon(e1, e2)
   val res = e3.element
 }
