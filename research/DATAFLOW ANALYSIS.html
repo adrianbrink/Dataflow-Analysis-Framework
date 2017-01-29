@@ -92,8 +92,8 @@ less obvious how a compiler can discover these facts since they cannot
 be discovered by looking only at one or two consecutive statements.
 A more <em>global</em> analysis is needed so that the compiler knows at each
 point in the program:
-<ul><li> which variables are guaranteed to have constant values, and
-    </li><li> which variables will be used before being redefined.
+<ul><li> which prorgramParameters are guaranteed to have constant values, and
+    </li><li> which prorgramParameters will be used before being redefined.
 </li></ul>
 To discover these kinds of properties, we use <em>dataflow
 analysis</em>.
@@ -132,7 +132,7 @@ Both examples use the following program:
 <em><u>Constant Propagation</u></em>
 </p><p>
 The goal of constant propagation is to determine where in the program
-variables are guaranteed to have constant values.
+prorgramParameters are guaranteed to have constant values.
 More specifically, the information computed for each CFG node n is a
 set of pairs, each of the form (variable, value).
 If we have the pair (x, v) at node n, that means that
@@ -146,10 +146,10 @@ constant-propagation information.
 </p><p>
 <em><u>Live-Variable Analysis</u></em>
 </p><p>
-The goal of live-variable analysis is to determine which variables are
+The goal of live-variable analysis is to determine which prorgramParameters are
 "live" at each point in the program; a variable is live if its current
 value might be used before being overwritten.  The information
-computed for each CFG node is the set of variables that are live
+computed for each CFG node is the set of prorgramParameters that are live
 immediately after that node.  Below is the CFG for the example
 program, annotated with live variable information.
 </p><p>
@@ -203,7 +203,7 @@ problem unless otherwise specified.
 Another way that many common dataflow problems can be categorized is
 as <em>may</em> problems or <em>must</em> problems.  The solution to a
 "may" problem provides information about what <em>may</em> be true at
-each program point (e.g., for live-variables analysis, a variable is
+each program point (e.g., for live-prorgramParameters analysis, a variable is
 considered live after node n if its value <em>may</em> be used before
 being overwritten, while for constant propagation, the pair (x, v)
 holds before node n if x <em>must</em> have the value v at
@@ -239,12 +239,12 @@ For constant propagation, an individual dataflow fact is a set of
 pairs of the form (var, val), so the domain of dataflow facts is the set of
 all such sets of pairs (the power set).
 For live-variable analysis, it is the power set of the set of
-variables in the program.
+prorgramParameters in the program.
 </p><p>
 For both constant propagation and live-variable analysis,
 the "init" fact is the empty set
 (no variable starts with a constant value, and no
-variables are live at the end of the program).
+prorgramParameters are live at the end of the program).
 </p><p>
 For constant propagation, the combining operation &#8968;&#8969; is
 set intersection.
@@ -267,7 +267,7 @@ For a node n that assigns to a variable x, there are two possibilities:
        In this case, the function result is the same as its input
        except that if variable x was constant the before n,
        it is not constant after n.
-  </li><li> All right-hand-side variables have constant values.
+  </li><li> All right-hand-side prorgramParameters have constant values.
        In this case, the right-hand side of the assignment is evaluated
        producing consant-value c, and the dataflow-function result is
        the same as its input except that it includes the pair (x, c) for
@@ -278,11 +278,11 @@ For a node n that assigns to a variable x, there are two possibilities:
 For live-variable analysis, the dataflow function for each node n
 has the form:
 <em>f<sub>n</sub>(S) = (S - KILL<sub>n</sub>) union GEN<sub>n</sub></em>,
-where <em>KILL<sub>n</sub></em> is the set of variables defined at node n, and
-<em>GEN<sub>n</sub></em> is the set of variables used at node n.  In other
-words, for a node that does not assign to any variable, the variables
+where <em>KILL<sub>n</sub></em> is the set of prorgramParameters defined at node n, and
+<em>GEN<sub>n</sub></em> is the set of prorgramParameters used at node n.  In other
+words, for a node that does not assign to any variable, the prorgramParameters
 that are live before n are those that are live after n plus those that
-are used at n; for a node that assigns to variable x, the variables
+are used at n; for a node that assigns to variable x, the prorgramParameters
 that are live before n are those that are live after n <em>except</em>
 x, plus those that are used at n (including x if it is used at n as
 well as being defined there).
@@ -291,7 +291,7 @@ An equivalent way of formulating the dataflow functions for
 live-variable analysis is: <em>f<sub>n</sub>(S) = (S intersect
 NOT-KILL<sub>n</sub>) union GEN<sub>n</sub></em>, where
 <em>NOT-KILL<sub>n</sub></em> is the set
-of variables <em>not</em> defined at node n.  The advantage of this
+of prorgramParameters <em>not</em> defined at node n.  The advantage of this
 formulation is that it permits the dataflow facts to be represented
 using bit vectors, and the dataflow functions to be implemented using
 simple bit-vector operations (<b>and</b>
@@ -310,9 +310,9 @@ These problems are called <em>GEN/KILL</em> problems, or
 </p><center>
 <u><b>TEST YOURSELF #2</b></u> </center></a>
 <p>
-Consider using dataflow analysis to determine which variables might be
+Consider using dataflow analysis to determine which prorgramParameters might be
 used before being initialized; i.e., to determine, for each point in
-the program, for which variables there is a path to that point on which
+the program, for which prorgramParameters there is a path to that point on which
 the variable was never defined.
 Define the "may-be-uninitialized" dataflow problem by specifying:
 </p><ul> <li> the domain D of "dataflow facts",
@@ -415,7 +415,7 @@ associate two dataflow facts with each node n:
   <li> <em>n.before</em>: the information that holds before n executes, and
   </li><li> <em>n.after</em>: the information that holds after n executes.
 </li></ol>
-These n.befores and n.afters are the variables of our equations,
+These n.befores and n.afters are the prorgramParameters of our equations,
 which are defined as follows (two equations for each node n):
 <ol>
   <li> n.before = &#8968;&#8969;(p1.after, p2.after, ...)<br> where p1,

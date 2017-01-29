@@ -1,6 +1,5 @@
 package eu.adrianbrink.dataflowanalysis;
 
-import eu.adrianbrink.dataflowanalysis.Analysis.NaiveAnalysis;
 import eu.adrianbrink.dataflowanalysis.Analysis.SignAnalysis;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
@@ -34,12 +33,9 @@ public class Main
         CFG cfg = new CFG(cfgNodes, statementList);
         System.out.println("xxx");
 
-        SignAnalysis signAnalysis = new SignAnalysis();
-        signAnalysis.generateLattice(cfg);
+        SignAnalysis signAnalysis = new SignAnalysis(cfg);
         System.out.println("xxx");
 
-        NaiveAnalysis naiveAnalysis = new NaiveAnalysis(cfg, signAnalysis);
-        naiveAnalysis.run();
         System.out.println("xxx");
 
 //        List<Statement> statementList2 = ParserHelper.parse("x := 1; y := 10; z := 100");

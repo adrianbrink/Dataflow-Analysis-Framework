@@ -1,6 +1,6 @@
 package eu.adrianbrink.dataflowanalysis.Lattice;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by sly on 28/01/2017.
@@ -8,33 +8,41 @@ import java.util.List;
 // TODO: Ideally I would create an interface for the type of operations that LatticeElement needs to support and then the client code can decide what representation it wants to use.
 // NOTE: This will not work for constant propagation analysis since the bitsets would be massive. For constant analysis it makes much more sence to keep track of the actual values.
 public class Lattice {
-    private LatticeElement[] values;
-    private List<String> elementRepresentation;
+    private ArrayList<Map<String, BitSet>> values;
+    // Bottom, -, +, Top
+    // this maps directly to the BitSet, if the bit at 0 is set then the variable is Bottom
+    private List<String> latticeValues;
+    // x and y
+    private List<String> prorgramParameters;
 
-    public Lattice(int numberOfCFGNodes, List<String> elementRepresentation) {
-        this.values = new LatticeElement[numberOfCFGNodes];
-        this.elementRepresentation = elementRepresentation;
-        for (int i = 0; i < this.values.length; i++) {
-            values[i] = new LatticeElement();
+    // lattice values are the hasse diagram and prorgramParameters are the actual assignments from the program
+    public Lattice(int numberOfCFGNodes, List<String> latticeValues, List<String> prorgramParameters) {
+        this.latticeValues = latticeValues;
+        this.prorgramParameters = prorgramParameters;
+        this.values = new ArrayList<Map<String, BitSet>>(numberOfCFGNodes);
+        for (int i = 0; i < numberOfCFGNodes; i++) {
+            Map<String, BitSet> newLatticeRow = new HashMap<>();
+            for (String variable : prorgramParameters) {
+                newLatticeRow.put(variable, new BitSet(latticeValues.size()));
+            }
+            this.values.add(i, newLatticeRow);
         }
     }
 
-    public LatticeElement getLatticeElement(int index) {
-        return this.values[index];
+    public Map<String, BitSet> getLatticeElement(int index) {
+        return this.values.get(index);
     }
 
-    public void updateLatticeElement(LatticeElement element, int index) {
-        this.values[index] = element;
+    public void updateLatticeElement(Map<String, BitSet> element, int index) {
+        this.values.set(index, element);
     }
 
-    public void setAll(int bitIndex, boolean value) {
-        for (LatticeElement element : values) {
-            element.set(bitIndex, value);
+    public void setAll(String value) {
+        int index = this.latticeValues.indexOf(value);
+        for (Map<String, BitSet> arrayListEntry : values) {
+            for (Map.Entry<String, BitSet> entry : arrayListEntry.entrySet()) {
+                entry.getValue().set(index, true);
+            }
         }
-    }
-
-    public int getIndex(String element) {
-        int index = elementRepresentation.indexOf(element);
-        return index;
     }
 }

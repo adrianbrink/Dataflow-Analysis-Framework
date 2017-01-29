@@ -1,48 +1,74 @@
 package eu.adrianbrink.dataflowanalysis.Analysis;
 
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
+import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.Lattice.Lattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.AST;
 import eu.adrianbrink.parser.Assignment;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Created by sly on 29/01/2017.
  */
 // this determines the direction we move in (forward/backward) and whether it is may/must.
-public class SignAnalysis implements IAnalysis {
+public class SignAnalysis {
     private Lattice lattice;
-    // TODO: Change Bottom and Top to the symbols, because otherwise the variable names could clash.
-    @Override
-    public Lattice generateLattice(CFG cfg) {
-        Set<Assignment> assignmentSet = cfg.getAssignments();
-        List<String> assignmentLeftValues = new ArrayList<>();
-        assignmentLeftValues.add("Bottom");
-        for (Assignment assignment : assignmentSet) {
-            assignmentLeftValues.add(assignment.x);
+    private CFG cfg;
+
+    public SignAnalysis(CFG cfg) {
+        this.cfg = cfg;
+        this.lattice = SignAnalysis.generateLattice(cfg);
+    }
+
+    // TODO: This should be put in the interface and return whatever you are interested in (Expressions for AvailableExpressions or Assignments for SignAnalysis)
+    private static Set<Assignment> getAssignments(CFG cfg) {
+        Set<Assignment> assignmentsSet = new HashSet<>();
+        for (CFGNode node : cfg.getCfgNodes()) {
+            AST assigment = node.getStatementOrExpression();
+            if (assigment instanceof Assignment) {
+                assignmentsSet.add((Assignment) assigment);
+            } else {
+                continue;
+            }
         }
-        assignmentLeftValues.add("Top");
-        Lattice lattice = new Lattice(cfg.getCfgNodes().size(), assignmentLeftValues);
+        return assignmentsSet;
+    }
+
+    // TODO: Change Bottom and Top to the symbols, because otherwise the variable names could clash.
+    // TODO: This should also be in the interface and you should have to define your own lattice.
+    private static Lattice generateLattice(CFG cfg) {
+        Set<Assignment> assignmentSet = SignAnalysis.getAssignments(cfg);
+        List<String> variables = new ArrayList<>();
+        // all the variables, like x and y
+        for (Assignment assignment : assignmentSet) {
+            variables.add(assignment.x);
+        }
+
+        List<String> latticeElements = new ArrayList<>();
+        latticeElements.add("Bottom");
+        latticeElements.add("+");
+        latticeElements.add("-");
+        latticeElements.add("Top");
+        Lattice lattice = new Lattice(cfg.getCfgNodes().size(), latticeElements, variables);
         // initialise the lattice to bottom
-        lattice.setAll(0, true);
-        this.lattice = lattice;
+        lattice.setAll("Bottom");
         return lattice;
     }
 
-    @Override
-    public Function<LatticeElement, LatticeElement> getTransferFunction(AST statementOrExpression) {
-        if (statementOrExpression instanceof Assignment) {
-            int index = lattice.getIndex(((Assignment) statementOrExpression).x);
-            return (LatticeElement element1) -> {
-                LatticeElement newElement = element1.set(index, true);
-                return newElement;
-            };
-        }
-        return null;
-    }
+//    public Function<BitSet, BitSet> getTransferFunction(AST statementOrExpression) {
+//        if (statementOrExpression instanceof Assignment) {
+//            Expression expression = ((Assignment) statementOrExpression).e.;
+//            return (BitSet element1) -> {
+//
+//                if (element1.get())
+//                BitSet newElement = element1.set(index, true);
+//                return newElement;
+//            };
+//        }
+//        return null;
+//    }
 }
