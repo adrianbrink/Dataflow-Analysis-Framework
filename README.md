@@ -26,6 +26,7 @@
     - from simple to worklist
 4. Enable optimization to the source code
     - M2T transformations for the input code
+5. Write test cases for all possible program nestings and show that they work.
     
     
 ## Problems

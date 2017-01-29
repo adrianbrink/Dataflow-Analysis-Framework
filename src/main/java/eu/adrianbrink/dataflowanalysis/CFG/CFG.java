@@ -3,7 +3,9 @@ package eu.adrianbrink.dataflowanalysis.CFG;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sly on 26/01/2017.
@@ -15,6 +17,23 @@ public class CFG {
     public CFG(List<CFGNode> cfgNodes, List<Statement> statements) {
         this.cfgNodes = cfgNodes;
         CFG.constructCFG(cfgNodes, statements);
+    }
+
+    public List<CFGNode> getCfgNodes() {
+        return this.cfgNodes;
+    }
+
+    public Set<Assignment> getAssignments() {
+        Set<Assignment> assignmentsSet = new HashSet<>();
+        for (CFGNode node : this.cfgNodes) {
+            AST assigment = node.getStatementOrExpression();
+            if (assigment instanceof Assignment) {
+                assignmentsSet.add((Assignment) assigment);
+            } else {
+                continue;
+            }
+        }
+        return assignmentsSet;
     }
 
     private static void constructCFG(List<CFGNode> cfgNodes, List<Statement> statements) {

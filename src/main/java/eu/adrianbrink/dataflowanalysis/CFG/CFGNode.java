@@ -26,4 +26,8 @@ public class CFGNode {
     public void setNext(List<CFGNode> next) {
         this.next.addAll(next);
     }
+
+    public AST getStatementOrExpression() {
+        return this.statementOrExpression;
+    }
 }
