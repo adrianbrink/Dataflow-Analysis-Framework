@@ -23,4 +23,8 @@ public class Number extends Expression {
 		}
 		return false;
 	}
+
+	public int getN() {
+		return this.n;
+	}
 }

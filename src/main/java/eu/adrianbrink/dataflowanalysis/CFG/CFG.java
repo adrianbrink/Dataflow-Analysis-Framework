@@ -21,6 +21,16 @@ public class CFG {
         return this.cfgNodes;
     }
 
+    public int getSize() {
+        int size = this.cfgNodes.size();
+        return size;
+    }
+
+    public CFGNode getCFGNode(int index) {
+        CFGNode cfgNode = this.cfgNodes.get(index);
+        return cfgNode;
+    }
+
     private static void constructCFG(List<CFGNode> cfgNodes, List<Statement> statements) {
         // create EntryNode
         CFGNode entryNode = new CFGNode(null);

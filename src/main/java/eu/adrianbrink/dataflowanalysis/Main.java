@@ -35,7 +35,7 @@ public class Main
 
         SignAnalysis signAnalysis = new SignAnalysis(cfg);
         System.out.println("xxx");
-
+        signAnalysis.run();
         System.out.println("xxx");
 
 //        List<Statement> statementList2 = ParserHelper.parse("x := 1; y := 10; z := 100");
