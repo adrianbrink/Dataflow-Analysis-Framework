@@ -1,6 +1,6 @@
 package eu.adrianbrink.dataflowanalysis;
 
-import eu.adrianbrink.dataflowanalysis.Analysis.SignAnalysis;
+import eu.adrianbrink.dataflowanalysis.Analysis.Framework.Sign;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
@@ -33,9 +33,9 @@ public class Main
         CFG cfg = new CFG(cfgNodes, statementList);
         System.out.println("xxx");
 
-        SignAnalysis signAnalysis = new SignAnalysis(cfg);
+        Sign sign = new Sign(cfg);
         System.out.println("xxx");
-        signAnalysis.run();
+        sign.run();
         System.out.println("xxx");
 
 //        List<Statement> statementList2 = ParserHelper.parse("x := 1; y := 10; z := 100");

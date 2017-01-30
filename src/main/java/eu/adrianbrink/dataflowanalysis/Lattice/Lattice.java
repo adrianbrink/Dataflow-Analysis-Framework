@@ -8,16 +8,16 @@ import java.util.*;
 // TODO: Ideally I would create an interface for the type of operations that LatticeElement needs to support and then the client code can decide what representation it wants to use.
 // TODO: Make the lattice generic over the latticeValues and programParameters. In the case of availableExpressions they might be the same. Generic over A and B
 // NOTE: This will not work for constant propagation analysis since the bitsets would be massive. For constant analysis it makes much more sence to keep track of the actual values.
-public class Lattice {
+public class Lattice implements ILattice {
     private List<Map<String, BitSet>> values;
     // Bottom, -, +, Top
     // this maps directly to the BitSet, if the bit at 0 is set then the variable is Bottom
     private List<String> latticeValues;
     // x and y
-    private List<String> programParameters;
+    private Set<String> programParameters;
 
     // lattice values are the hasse diagram and programParameters are the actual assignments from the program
-    public Lattice(int numberOfCFGNodes, List<String> latticeValues, List<String> programParameters) {
+    public Lattice(int numberOfCFGNodes, List<String> latticeValues, Set<String> programParameters) {
         this.latticeValues = latticeValues;
         this.programParameters = programParameters;
         this.values = new ArrayList<Map<String, BitSet>>(numberOfCFGNodes);
@@ -30,10 +30,28 @@ public class Lattice {
         }
     }
 
-    private Lattice(List<Map<String, BitSet>> values, List<String> latticeValues, List<String> programParameters) {
+    private Lattice(List<Map<String, BitSet>> values, List<String> latticeValues, Set<String> programParameters) {
         this.values = values;
         this.latticeValues = latticeValues;
         this.programParameters = programParameters;
+    }
+
+    // returns true of both this and that are the same
+    public boolean compare(Lattice that) {
+        for (int i = 0; i < this.values.size(); i++) {
+            Map<String, BitSet> thisLatticeRow = this.values.get(i);
+            Map<String, BitSet> thatLatticeRow = that.values.get(i);
+            for (Map.Entry<String, BitSet> thisEntry : thisLatticeRow.entrySet()) {
+                BitSet thisBitSet = thisEntry.getValue();
+                BitSet thatBitSet = thatLatticeRow.get(thisEntry.getKey());
+                if (thisBitSet.equals(thatBitSet)) {
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Map<String, BitSet> getLatticeElement(int index) {
@@ -58,13 +76,14 @@ public class Lattice {
         return index;
     }
 
+    // TODO: This should be moved to the Analysis engine
     public Lattice deepCopy() {
         List<String> latticeValues = new ArrayList<>();
         for (String value : this.latticeValues) {
             latticeValues.add(value);
         }
 
-        List<String> programParameters = new ArrayList<>();
+        Set<String> programParameters = new HashSet<>();
         for (String parameter : this.programParameters) {
             programParameters.add(parameter);
         }

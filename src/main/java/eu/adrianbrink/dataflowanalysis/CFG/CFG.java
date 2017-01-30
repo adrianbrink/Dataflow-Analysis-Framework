@@ -95,6 +95,7 @@ public class CFG {
             }
             return whileNode;
         }
+        // impossible to reach, since above all possible AST subclasses are handled
         return null;
     }
 }
