@@ -12,6 +12,7 @@ import java.util.List;
 public class CFGNode {
     private List<CFGNode> previous = new ArrayList<>();
     private List<CFGNode> next = new ArrayList<>();
+    private CFGState state;
     // TODO: Find a more general name for this
     private AST statementOrExpression;
 

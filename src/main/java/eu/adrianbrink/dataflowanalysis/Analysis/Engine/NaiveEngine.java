@@ -14,40 +14,41 @@ import java.util.function.Function;
  * Created by sly on 30/01/2017.
  */
 public class NaiveEngine implements IAnalysisEngine {
-    private List<CFGState> states;
-    private ILattice lattice;
-    private IAnalysisFramework framework;
+    private List<CFGState> states = new ArrayList<>();
+    private final ILattice lattice;
+    private final IAnalysisFramework framework;
+    private final CFG cfg;
 
     public NaiveEngine(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
         this.lattice = lattice;
         this.framework = framework;
+        this.cfg = cfg;
 
         for (CFGNode node : cfg.getCfgNodes()) {
-            CFGState state;
-            ILattice initialInLattice = framework.initialLattice();
-            ILattice initialOutLattice = framework.initialLattice();
-            if ((node.getStatementOrExpression() == null) && (node.getPrevious() == null)) {
-                state = new CFGState(node, null, initialOutLattice);
-            } else if ((node.getStatementOrExpression() == null) && (node.getNext() == null)) {
-                state = new CFGState(node, initialInLattice, null);
-            } else {
-                state = new CFGState(node, initialInLattice, initialOutLattice);
-            }
-            states.add(state);
+            ILattice bottom = framework.initialLattice();
+            if (node.isEntryPoint())
+                node.setState(new CFGState(null, bottom));
+             else if (node.isExitPoint())
+                node.setState(new CFGState(bottom, null));
+             else
+                node.setState(new CFGState(bottom, bottom));
+            // I do not think we need that but i did not want to change everything :)
+            states.add(node.getState());
         }
     }
 
+
+
     @Override
     public void run() {
-        ILattice previousLattice = this.lattice.deepCopy();
-        for (CFGState state : this.states) {
-            if (state.getIn() == null) {
-                continue;
-            } else {
+        //ILattice previousLattice = this.lattice.deepCopy();
+        for (CFGNode node : cfg.getCfgNodes()) {
+            CFGState state = node.getState();
+            if (state != null && state.getIn() != null) {
                 // TODO: I don't have access to the CFGStates of my precs nodes. Maybe my CFGNodes should carry the information to which state they belong.
-                state.getNode().getPrevious()
-                Function<ILattice, ILattice> transferFunction = this.framework.transferFunction(state.getNode());
-                transferFunction.apply()
+                Function<ILattice, ILattice> transferFunction = this.framework.transferFunction(node);
+                //state.getNode().getPrevious()
+                //transferFunction.apply()
             }
         }
     }
