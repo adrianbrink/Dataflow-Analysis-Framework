@@ -11,4 +11,22 @@ public class CFGState {
     private CFGNode node;
     private ILattice in;
     private ILattice out;
+
+    public CFGState(CFGNode node, ILattice in, ILattice out) {
+        this.node = node;
+        this.in = in;
+        this.out = out;
+    }
+
+    public CFGNode getNode() {
+        return this.node;
+    }
+
+    public ILattice getIn() {
+        return this.in;
+    }
+
+    public ILattice getOut() {
+        return this.out;
+    }
 }

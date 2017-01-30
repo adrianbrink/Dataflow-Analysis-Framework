@@ -47,11 +47,11 @@
             </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#background">Background</a>
                 <ul>
                 <li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#poset">Partially ordered sets</a>
-                </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#lattice">Lattices</a>
+                </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#finiteWidthLattice">Lattices</a>
                 </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#monotonic">Monotonic and distributive functions</a>
                 </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#fixedpoint">Fixed points</a>
                 </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#newlattices">Creating new lattices from old ones</a>
-                </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#latticeSummary">Summary of lattice theory</a>
+                </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#latticeSummary">Summary of finiteWidthLattice theory</a>
                 </li></ul>
             </li><li><a href="http://pages.cs.wisc.edu/~horwitz/CS704-NOTES/2.DATAFLOW.html#kildall">Kildall's Lattice Framework for Dataflow Analysis</a>
             </li></ul>
@@ -567,8 +567,8 @@ algorithm (this version is for forward problems).
 It uses a new value T (called "top").  T has the property
 that, for all dataflow facts d, T &#8968;&#8969; d = d.
 Also, for all dataflow functions, <em>f</em><sub>n</sub>(T) = T.
-(When we consider the lattice model for dataflow analysis we will see
-that this initial value is the top element of the lattice.)
+(When we consider the finiteWidthLattice model for dataflow analysis we will see
+that this initial value is the top element of the finiteWidthLattice.)
 
 </p><ul>
   <li> <em>Step 1 (initialize n.afters)</em>: <br>
@@ -605,7 +605,7 @@ This algorithm works regardless of the order in which nodes are
 removed from the worklist.  However, that order can affect the
 efficiency of the algorithm.  A number of variations have been
 developed that involve different ways of choosing that order.
-When we consider the lattice model, we will revisit the question of
+When we consider the finiteWidthLattice model, we will revisit the question of
 complexity.
 
 <a name="latticeModel">
@@ -731,12 +731,12 @@ S is the set of all sets of letters and the ordering is subset.
 This <b>is</b> a poset.
 </p><p>
 
-<a name="lattice">
-</a></p><h4><a name="lattice"><u>Lattices</u></a></h4>
+<a name="finiteWidthLattice">
+</a></p><h4><a name="finiteWidthLattice"><u>Lattices</u></a></h4>
 <p>
 <b>Definition:</b>
 </p><ul>
-  A <b>lattice </b> is a poset in which every pair of elements has:
+  A <b>finiteWidthLattice </b> is a poset in which every pair of elements has:
   <ol>
     <li> a <u>Least Upper Bound</u> (the <em>join</em> of the
          two elements), and
@@ -772,41 +772,41 @@ The idea for the meet operation is similar, with the reverse orderings.
 <h5>Examples:</h5>
 <ul>
   <li> Example 1 above (English words, ordered by "substring")
-       is <b>not</b> a lattice.
+       is <b>not</b> a finiteWidthLattice.
        (For instance, "a" and "he" have no meet.)
   </li><li> Example 3 above (integers, ordered by "less than or equal to")
-       <b>is</b> a lattice.  The meet operator is  "min"
+       <b>is</b> a finiteWidthLattice.  The meet operator is  "min"
        and the join operator is "max".
   </li><li> Example 5 above (sets of letters, ordered by subset)
-       <b>is</b> a lattice.  The meet operator is intersection
+       <b>is</b> a finiteWidthLattice.  The meet operator is intersection
        and the join operator is union.
 </li></ul>
 
-<a name="complete lattice">
+<a name="complete finiteWidthLattice">
 <h4><u>Complete lattices</u></h4></a>
 <b>Definition: </b>
 <ul>
-  A <b>complete lattice </b> is a lattice in which all <em>subsets</em> have
+  A <b>complete finiteWidthLattice </b> is a finiteWidthLattice in which all <em>subsets</em> have
   a greatest lower bound and a least upper bound (the bounds must be in
-  the lattice, but not necessarily in the subsets themselves).
+  the finiteWidthLattice, but not necessarily in the subsets themselves).
 </ul>
 <p>
-Note: Every finite lattice (i.e., S is finite) is complete.
+Note: Every finite finiteWidthLattice (i.e., S is finite) is complete.
 </p><p>
 </p><h4> Examples:</h4>
 <ul>
   <li> Example 3 above (integers, ordered by "less than or equal to")
-       is <b>not</b> a complete lattice.
+       is <b>not</b> a complete finiteWidthLattice.
        The set of all positive numbers is a subset of S;
        it has a lower bound but no upper bound.
        <br>
        The set of all even numbers is a subset of S;
        it has neither an upper nor a lower bound.
   </li><li> The set: {1, 1/2, 1/4, 1/8, ... 0} with the usual numeric ordering
-       is an example of an <em>infinite</em> complete lattice.
+       is an example of an <em>infinite</em> complete finiteWidthLattice.
 </li></ul>
 <p>
-Note: Every complete lattice has a greatest element, "Top" (written
+Note: Every complete finiteWidthLattice has a greatest element, "Top" (written
 as a capital T) and a least
 element "Bottom" (written as an upside-down capital T).
 They are the least-upper and the
@@ -816,14 +816,14 @@ greatest-lower bounds of the entire underlying set S.
 </a></p><h4><a name="monotonic"><u>Monotonic and distributive functions</u></a></h4>
 <b>Definition:</b>
 <ul> 
-  A function f: L &#8594; L (where L is a lattice)
+  A function f: L &#8594; L (where L is a finiteWidthLattice)
   is <b>monotonic</b> iff for all x,y in L:
   x &#8838; y implies f(x) &#8838; f(y).
 </ul>
 
 <b>Definition:</b>
 <ul> 
-  A function f: L &#8594; L (where L is a lattice)
+  A function f: L &#8594; L (where L is a finiteWidthLattice)
   is <b>distributive</b> iff for all x,y in L:
   f(x meet y) = f(x) meet f(y).
 </ul>
@@ -878,7 +878,7 @@ f(S1) meet f(S2) = {(x,3)}
 <p>
 
 </p><h4>Examples:</h4>
-Let L be the lattice whose elements are sets of letters (as above).
+Let L be the finiteWidthLattice whose elements are sets of letters (as above).
 Here are the fixed points for the functions we considered above:
 <ol>
   <li> f(S) = S union {a}
@@ -894,7 +894,7 @@ Here are the fixed points for the functions we considered above:
        sets that do <em>not</em> contain 'a'.
 </li></ol>
 As an example of a function that has no fixed point, consider
-the lattice of integers with the usual "less than or equal to"
+the finiteWidthLattice of integers with the usual "less than or equal to"
 ordering.
 The function: f(x) = x+1 has no fixed point.
 
@@ -903,10 +903,10 @@ Here is an important theorem about lattices and monotonic functions:
 </p><p>
 <b>Theorem:</b>
 </p><ul> 
-  If L is a complete lattice and f: L &#8594; L is monotonic, then:
+  If L is a complete finiteWidthLattice and f: L &#8594; L is monotonic, then:
   <ul>
     <li> f has at least one fixed point.
-    </li><li> f's fixed points themselves form a (complete) lattice. (i.e.
+    </li><li> f's fixed points themselves form a (complete) finiteWidthLattice. (i.e.
          there exist greatest and least fixed points).
     </li><li> If L has no infinite descending chains, then the greatest
          fixed point of f can be found by iterating:
@@ -925,13 +925,13 @@ Here is an important theorem about lattices and monotonic functions:
 </ul>
 
 <h4>Examples</h4>
-L is our usual lattice of sets of letters, with set union for the join.
+L is our usual finiteWidthLattice of sets of letters, with set union for the join.
 <ol>
   <li> f(S) = S U {a}
        <br>
        Recall that f <em>is</em> monotonic.
        The greatest fixed point of f is the set of all letters: {a, b, ..., z}.
-       That is also the top element of the lattice, so we find the
+       That is also the top element of the finiteWidthLattice, so we find the
        greatest fixed point in just one iteration:
        <ul>
          f(T) = T
@@ -959,7 +959,7 @@ The elements of the cross-product are tuples of the form:
    </p><ul>
        &lt;e<sub>1</sub>, e<sub>2</sub>, ... , e<sub>n</sub>&gt;
    </ul>
-   such that value e<sub>k</sub> belongs to lattice Lk
+   such that value e<sub>k</sub> belongs to finiteWidthLattice Lk
    <p>
    The ordering is element-wise:
      &lt;e<sub>1</sub>, e<sub>2</sub>, ..., e<sub>n</sub>&gt; &#8838;
@@ -981,17 +981,17 @@ the individual lattices:
 &lt;bottom of L1, bottom of L2, ... , bottom of Ln&gt;.
 
 <a name="latticeSummary">
-</a></p><h4><a name="latticeSummary"><u>Summary of lattice theory</u></a></h4><a name="latticeSummary">
+</a></p><h4><a name="latticeSummary"><u>Summary of finiteWidthLattice theory</u></a></h4><a name="latticeSummary">
 <ul>
 <li><b>poset</b>: a partially ordered set, includes a set of elements S and a
 	   partial ordering &#8838;
-</li><li><b>lattice</b>: a poset with meet and join for every pair of elements
-</li><li><b>complete lattice</b>:
-	a lattice with meet and join for all subsets of S
+</li><li><b>finiteWidthLattice</b>: a poset with meet and join for every pair of elements
+</li><li><b>complete finiteWidthLattice</b>:
+	a finiteWidthLattice with meet and join for all subsets of S
 </li><li><b>monotonic functions</b>: x &#8838; y implies f(x) &#8838; f(y)
 </li><li><b>fixed points</b>:
         x is a fixed point of function f (of type L&#8594;L) iff x = f(x). <br>
-	If L is a complete lattice and f is monotonic,
+	If L is a complete finiteWidthLattice and f is monotonic,
 	then f has a greatest and a least fixed point. <br>
 	If L has no infinite descending chains then we can compute the
 	greatest fixed point of f via iteration ( f(T), f(f(T)) etc.)
@@ -1025,14 +1025,14 @@ Kildall addressed this issue by putting some additional requirements
 on D, &#8968;&#8969; , and f<sub>n</sub>.
 In particular he required that:
 </p><ol>
-  <li> D be a <em>complete lattice</em> L such that for any
+  <li> D be a <em>complete finiteWidthLattice</em> L such that for any
        <em>instance</em> of the dataflow problem, L has no
        infinite descending chains.
-  </li><li> &#8968;&#8969;  be the lattice's meet operator.
+  </li><li> &#8968;&#8969;  be the finiteWidthLattice's meet operator.
   </li><li> All f<sub>n</sub> be <em>distributive</em>.
 </li></ol>
 He also required (essentially) that the iterative algorithm initialize
-n.after (for all nodes n other than the enter node) to the lattice's
+n.after (for all nodes n other than the enter node) to the finiteWidthLattice's
 "top" value.
 (Kildall's algorithm is slightly different from the iterative algorithm
 presented here, but computes the same result.)
@@ -1088,19 +1088,19 @@ In 1977, a paper by Kam and Ullman (Acta Informatica 7, 1977)
 extended Kildall's results to show that,
 given monotonic dataflow functions:
 </p><ul>
-  <li> The solutions to the set of equations form a lattice.
+  <li> The solutions to the set of equations form a finiteWidthLattice.
   </li><li> The solution computed by the iterative algorithm
        is the <em>greatest</em> solution
-       (using the lattice ordering).
+       (using the finiteWidthLattice ordering).
   </li><li> If the functions are monotonic but not distributive, then the
        solution computed by the iterative algorithm may
-       be less than the MOP solution (using the lattice ordering).
+       be less than the MOP solution (using the finiteWidthLattice ordering).
 </li></ul>
 <p>
 To show that the iterative algorithm computes the greatest
 solution to the set of equations, we can "transform" the
 set of equations into a single, monotonic function L &#8594; L
-(for a complete lattice L) as follows:
+(for a complete finiteWidthLattice L) as follows:
 </p><p>
 Consider the right-hand side of each equation to be a "mini-function".
 For example, for the two equations:
@@ -1131,15 +1131,15 @@ equations!
 We want the greatest solution. (i.e., the greatest fixed point)
 To guarantee that this solution exists we need to know that:
 </p><ol>
-  <li> the type of f is L&#8594;L, where L is a complete lattice
+  <li> the type of f is L&#8594;L, where L is a complete finiteWidthLattice
   </li><li> f is monotonic
 </li></ol>
 <p>
 To show (1), note that the each individual value in the tuple
-is an element of a complete lattice. (That is required by Kildall's
+is an element of a complete finiteWidthLattice. (That is required by Kildall's
 framework.)
 So since cross product (tupling) preserves completeness,
-the tuple itself is an element of a complete lattice.
+the tuple itself is an element of a complete finiteWidthLattice.
 </p><p>
 To show (2), note that the mini-functions that define each
 n.after value are monotonic (since those are the dataflow
@@ -1225,7 +1225,7 @@ i.e., given two tuples:
      t2 = &lt;e<sub>1</sub>', e<sub>2</sub>', ..., e<sub>n</sub>'&gt;
 </ol>
 such that: t1 &#8838; t2, we must show f(t1)  &#8838; f(t2).
-Recall that, for a cross-product lattice, the ordering is element-wise;
+Recall that, for a cross-product finiteWidthLattice, the ordering is element-wise;
 thus, t1 &#8838; t2 means: e<sub>k</sub> &#8838; e<sub>k</sub>', for all k.
 We know that all of the mini-functions g are monotonic, so for all k,
 g<sub>k</sub>(e<sub>k</sub>) &#8838; g<sub>k</sub>(e<sub>k</sub>').
@@ -1235,7 +1235,7 @@ f to be monotonic!
 We now know:
 </p><ul>
   <li>f is a monotonic function of type L&#8594;L
-  </li><li>L is a complete lattice with no infinite descending chains
+  </li><li>L is a complete finiteWidthLattice with no infinite descending chains
 </li></ul>
 <p>
 Therefore:
@@ -1260,7 +1260,7 @@ when the "after" value of some predecessor has changed.
 Given:
    <ul>
      <li>A CFG,
-     </li><li>a domain of "dataflow facts" (a complete lattice L),
+     </li><li>a domain of "dataflow facts" (a complete finiteWidthLattice L),
      </li><li>a monotonic dataflow function for each CFG node, and
      </li><li>an initial dataflow fact (an element of L)
    </li></ul>
@@ -1288,6 +1288,6 @@ the MOP solution.
 It is also true that the
 greatest solution to the system of equations is always
 an approximation to the MOP solution (i.e.,
-may be lower in the lattice of solutions).
+may be lower in the finiteWidthLattice of solutions).
 
 </p></a></body></html>

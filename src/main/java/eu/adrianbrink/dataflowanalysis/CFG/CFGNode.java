@@ -30,4 +30,12 @@ public class CFGNode {
     public AST getStatementOrExpression() {
         return this.statementOrExpression;
     }
+
+    public List<CFGNode> getNext() {
+        return this.next;
+    }
+
+    public List<CFGNode> getPrevious() {
+        return this.previous;
+    }
 }

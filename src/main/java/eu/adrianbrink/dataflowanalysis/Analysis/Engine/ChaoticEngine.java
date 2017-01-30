@@ -1,11 +1,14 @@
 package eu.adrianbrink.dataflowanalysis.Analysis.Engine;
 
+import eu.adrianbrink.dataflowanalysis.Analysis.Framework.IAnalysisFramework;
+import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
+
 /**
  * Created by sly on 30/01/2017.
  */
 public class ChaoticEngine implements IAnalysisEngine {
     @Override
-    public void run() {
+    public void run(IAnalysisFramework framework, ILattice lattice) {
 
     }
 }

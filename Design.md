@@ -19,4 +19,4 @@ Lattice
     
 TransferFunction
     - transfer(Lattice in) -> Lattice out
-        - takes a lattice and outputs another lattice
+        - takes a finiteWidthLattice and outputs another finiteWidthLattice
