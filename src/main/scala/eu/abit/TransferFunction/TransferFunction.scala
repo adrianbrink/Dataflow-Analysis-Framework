@@ -1,7 +1,7 @@
 package eu.abit.TransferFunction
 
 import eu.abit.lattice.LatticeElement
-import eu.adrianbrink.parser.{Expression, Statement, Variable}
+import eu.adrianbrink.parser._
 
 /*
   Represents the Transfer Function for each program point.
@@ -25,4 +25,24 @@ abstract class TransferFunction[A] {
   def transferFunctionForExpressions(env: Map[Variable, LatticeElement[A]])
                                     (latticeElement: LatticeElement[A])
                                     (exp: Expression)
+}
+
+object Test extends App {
+  val transferFunction = new TransferFunction[Expression]() {
+
+    override def transferFunctionForExpressions(env:Map[Variable, LatticeElement[Expression]])
+                                               (latticeElement: LatticeElement[Expression])
+                                               (exp: Expression)  = throw new NotImplementedError()
+
+
+    override def transferFunctionForStatements(env: Map[Variable, LatticeElement[Expression]])
+                                              (latticeElement: LatticeElement[Expression])
+                                              (stat: Statement)  = stat match {
+      case assign: Assignment => latticeElement
+      case out: Output =>  latticeElement
+      case wh: While =>latticeElement
+      case iff: If => latticeElement
+      case _ => latticeElement
+    }
+  }
 }
