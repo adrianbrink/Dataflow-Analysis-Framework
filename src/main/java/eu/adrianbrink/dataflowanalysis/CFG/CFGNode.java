@@ -35,7 +35,20 @@ public class CFGNode {
         return this.next;
     }
 
-    public List<CFGNode> getPrevious() {
-        return this.previous;
+    public List<CFGNode> getPrevious() {return this.previous;}
+
+    public CFGState getState() {return state;}
+
+    public void setState(CFGState cfgState) {this.state = cfgState;}
+
+    public boolean isEntryPoint() {
+        return statementOrExpression == null && previous == null;}
+
+    public boolean isExitPoint() {
+        return next == null && statementOrExpression == null;
     }
+
+
+
+
 }

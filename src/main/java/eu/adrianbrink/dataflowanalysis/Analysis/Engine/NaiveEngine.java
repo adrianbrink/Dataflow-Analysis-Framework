@@ -6,6 +6,7 @@ import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGState;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
