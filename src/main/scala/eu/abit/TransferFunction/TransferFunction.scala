@@ -24,6 +24,5 @@ abstract class TransferFunction[A] {
   // Not sure if we need that though since we can get the expressions from the statements.
   def transferFunctionForExpressions(env: Map[Variable, LatticeElement[A]])
                                     (latticeElement: LatticeElement[A])
-                                    (exp: Expression) =
-            throw new NotImplementedError("This method should be implemented by subclasses....")
+                                    (exp: Expression)
 }
