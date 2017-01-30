@@ -22,6 +22,6 @@ public class Analysis {
     }
 
     public void run() {
-        engine.run(framework, lattice);
+        engine.run();
     }
 }

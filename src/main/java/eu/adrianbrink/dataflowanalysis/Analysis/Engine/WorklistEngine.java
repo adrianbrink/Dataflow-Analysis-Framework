@@ -8,7 +8,6 @@ import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
  */
 public class WorklistEngine implements IAnalysisEngine {
     @Override
-    public void run(IAnalysisFramework framework, ILattice lattice) {
-
+    public void run() {
     }
 }
