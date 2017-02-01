@@ -6,6 +6,8 @@ import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.AST;
 import eu.adrianbrink.parser.Assignment;
+import eu.adrianbrink.parser.Expression;
+import eu.adrianbrink.parser.Number;
 
 import java.util.BitSet;
 import java.util.HashSet;
@@ -13,11 +15,44 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Created by sly on 29/01/2017.
+ * Created by Adrian Brink on 29/01/2017.
  */
 public class Sign implements IAnalysisFramework {
 
-    public Function<ILattice, ILattice> transferFunction(CFGNode node) {
+    public Function<LatticeElement<BitSet>, LatticeElement<BitSet>> transferFunction(CFGNode node, ILattice lattice) {
+        // first check whether it is an assignment
+        // for SignAnalysis only assignments matter
+        if (node.getStatementOrExpression() instanceof Assignment) {
+            Expression expression = ((Assignment) node.getStatementOrExpression()).e;
+            // check which expressions are relevant for SignAnalysis
+            // bool expressions, conjunctions, disjunctions, equality, negation are not relevant
+            // relevant: number, addition, multiplication, variable
+            if (expression instanceof Number) {
+                if (((Number) expression).getN() >= 0) {
+                    return (LatticeElement<BitSet> one) -> {
+                        BitSet plusBitSet = new BitSet();
+                        plusBitSet.set(0, true);
+                        plusBitSet.set(1, false);
+                        LatticeElement<BitSet> two = new LatticeElement<>(plusBitSet);
+                        LatticeElement<BitSet> newLatticeElement = lattice.join(one, two);
+                        return newLatticeElement;
+                    };
+                } else {
+                    return (LatticeElement<BitSet> one) -> {
+                        BitSet minusBitSet = new BitSet();
+                        minusBitSet.set(0, false);
+                        minusBitSet.set(1, true);
+                        LatticeElement<BitSet> two = new LatticeElement<>(minusBitSet);
+                        LatticeElement<BitSet> newLatticeElement = lattice.join(one, two);
+                        return newLatticeElement;
+                    };
+                }
+            } else {
+                return (LatticeElement<BitSet> one) -> {
+                    return one;
+                };
+            }
+        }
         return null;
     }
 
@@ -27,58 +62,18 @@ public class Sign implements IAnalysisFramework {
             AST assignmentOrExpression = node.getStatementOrExpression();
             if (assignmentOrExpression instanceof Assignment) {
                 programParameters.add(((Assignment) assignmentOrExpression).x);
+                node.setParameter(((Assignment) assignmentOrExpression).x);
             }
         }
         return programParameters;
     }
 
     @Override
-    public LatticeElement initialElement() {
+    public LatticeElement<BitSet> initialElement() {
         BitSet bitSet = new BitSet();
         bitSet.set(0, false);
         bitSet.set(0, false);
         LatticeElement<BitSet> latticeElement = new LatticeElement<>(bitSet);
         return latticeElement;
     }
-
-//    // TODO: These transfer functions are troubling me, since they involve a lot of type casting and I don't know whether that is okay
-//    @Override
-//    public Function<ILattice, ILattice> transferFunction(CFGNode node) {
-//        AST assignmentOrExpression = node.getStatementOrExpression();
-//        if (assignmentOrExpression instanceof Assignment) {
-//            Assignment assignment = (Assignment) assignmentOrExpression;
-//            String variableName = assignment.x;
-//            Expression expression = assignment.e;
-//            // TODO: I assume here that the only thing that affects the sign of a variable is a number expression
-//            if (expression instanceof Number) {
-//                Number number = (Number) expression;
-//                if (number.getN() >= 0) {
-//                    return (ILattice lattice1) -> {
-//                        BitSet bitSet1 = (BitSet) lattice1.getValueForParameter(variableName);
-//                        BitSet newBitSet = (BitSet) bitSet1.clone();
-//                        newBitSet.or(this.plus);
-//                        ILattice newLattice = lattice1.deepCopy();
-//                        newLattice.setValueForParameter(variableName, newBitSet);
-//                        return newLattice;
-//                    };
-//                } else {
-//                    return (ILattice lattice1) -> {
-//                        BitSet bitSet1 = (BitSet) lattice1.getValueForParameter(variableName);
-//                        BitSet newBitSet = (BitSet) bitSet1.clone();
-//                        newBitSet.or(this.minus);
-//                        ILattice newLattice = lattice1.deepCopy();
-//                        newLattice.setValueForParameter(variableName, newBitSet);
-//                        return newLattice;
-//                    };
-//                }
-//            }
-//        } else {
-//            // any node that isn't an assignment has no effect on the state of my lattices and hence I just return the original lattice
-//            return (ILattice lattice1) -> {
-//                return lattice1;
-//            };
-//        }
-//        // shouldn't be reachable, since everything will be caught by the last else
-//        return null;
-//    }
 }

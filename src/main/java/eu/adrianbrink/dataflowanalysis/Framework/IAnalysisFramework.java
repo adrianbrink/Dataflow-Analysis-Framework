@@ -12,6 +12,7 @@ import java.util.function.Function;
 When implementing your specific analysis you need to implement three functions:
 - transferFunction()
     - this needs to return the appropriate transfer function for every language construct
+    - if a CFGNode does not have a statement or expression then null should be returned
 - getProgramParameters()
     - this needs to return all the programParameters you are interested in, e.g.: variables
 - initialElement()
@@ -19,13 +20,13 @@ When implementing your specific analysis you need to implement three functions:
  */
 
 /**
- * Created by sly on 30/01/2017.
+ * Created by Adrian Brink on 30/01/2017.
  */
 public interface IAnalysisFramework<A, B> {
 
     public Set<A> getProgramParameters(CFG cfg);
 
-    public Function<ILattice, ILattice> transferFunction(CFGNode node);
+    public Function<LatticeElement<B>, LatticeElement<B>> transferFunction(CFGNode node, ILattice lattice);
 
     public LatticeElement<B> initialElement();
 

@@ -51,3 +51,7 @@
 - *Optional* Implement the beginning of M2T and code optimisation
 - *Optional* Write unit tests for the framework
 - *Optional* Implement throwing errors for invalid program states instead of returning null
+
+## Further Improvements
+### Parser
+- it cannot parse statements that end with a semicolon

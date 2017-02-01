@@ -2,11 +2,11 @@ package eu.adrianbrink.parser;
 
 public class Skip extends Statement {
     public Skip(int line) {
-	super(line);
+		super(line);
     }
 
     void pretty(Printer p) {
-	p.print("skip");
+		p.print("skip");
     }
 	
 	@Override

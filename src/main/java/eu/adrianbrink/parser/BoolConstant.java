@@ -4,12 +4,12 @@ public class BoolConstant extends BoolExpression {
     public final boolean b;
 
     public BoolConstant(int line, boolean b) {
-	super(line);
-	this.b = b;
+		super(line);
+		this.b = b;
     }
 
     void pretty(Printer p) {
-	p.print(b ? "tt" : "ff");
+		p.print(b ? "tt" : "ff");
     }
 	
 	@Override

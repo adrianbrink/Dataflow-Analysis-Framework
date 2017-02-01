@@ -4,12 +4,12 @@ public class Number extends Expression {
     private int n;
 
     public Number(int line, int n) {
-	super(line);
-	this.n = n;
+		super(line);
+		this.n = n;
     }
 
     void pretty(Printer p) {
-	p.print("" + n);
+		p.print("" + n);
     }
 	
 	@Override

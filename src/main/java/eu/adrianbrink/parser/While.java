@@ -5,19 +5,19 @@ public class While extends Statement {
     public final Statement s;
 
     public While(int line, BoolExpression b, Statement s) {
-	super(line);
-	this.b = b;
-	this.s = s;
+		super(line);
+		this.b = b;
+		this.s = s;
     }
 
     void pretty(Printer p) {
-	p.print("while (");
-	b.pretty(p);
-	p.print(")");
-	p.in();
-	p.newline();
-	s.pretty(p);
-	p.out();
+		p.print("while (");
+		b.pretty(p);
+		p.print(")");
+		p.in();
+		p.newline();
+		s.pretty(p);
+		p.out();
     }
 	
 	@Override
