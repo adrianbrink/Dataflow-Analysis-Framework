@@ -13,7 +13,7 @@ abstract class TransferFunction[A] {
     @variable stat: The statement at the program point being analyzed.
    */
   def transferFunctionForStatements(env: Map[Variable, LatticeElement[A]])
-                                   (latticeElement: LatticeElement[A])
+                                   (neighborLatticeElement: LatticeElement[A])
                                    (stat: Statement): LatticeElement[A]
 
   /*
@@ -23,7 +23,7 @@ abstract class TransferFunction[A] {
    */
   // Not sure if we need that though since we can get the expressions from the statements.
   def transferFunctionForExpressions(env: Map[Variable, LatticeElement[A]])
-                                    (latticeElement: LatticeElement[A])
+                                    (neighborLatticeElement: LatticeElement[A])
                                     (exp: Expression)
 }
 
