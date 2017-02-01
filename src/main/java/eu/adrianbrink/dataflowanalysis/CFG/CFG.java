@@ -1,17 +1,15 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by sly on 26/01/2017.
  */
+// TODO: Ideally the analysis class should not never interact with CFGNodes directly but only through the CFG class. I should try and hide that implementation from the client code.
 public class CFG {
     private List<CFGNode> cfgNodes;
 
@@ -19,14 +17,7 @@ public class CFG {
         return this.cfgNodes;
     }
 
-    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
-        for (CFGNode node : cfg.getCFGNodes()) {
-            Function<LatticeElement, LatticeElement> transferFunction = framework.transferFunction(node, lattice);
-            node.setTransferFunction(transferFunction);
-        }
-    }
-
-    public static CFG constructCFG(List<Statement> statements) {
+    public static CFG constructCFG(List<Statement> statements, IAnalysisFramework framework) {
         List<CFGNode> cfgNodes = new ArrayList<>();
 
         CFG cfg = new CFG();

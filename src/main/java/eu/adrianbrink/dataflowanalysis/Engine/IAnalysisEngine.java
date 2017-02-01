@@ -1,4 +1,4 @@
-package eu.adrianbrink.dataflowanalysis.Analysis.Engine;
+package eu.adrianbrink.dataflowanalysis.Engine;
 
 import eu.adrianbrink.dataflowanalysis.Analysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;

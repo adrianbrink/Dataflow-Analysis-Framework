@@ -15,26 +15,25 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Adrian Brink on 30/01/2017.
+ * Hello world!
+ *
  */
+// TODO: The parser can't parse programs with an ending ; . This should work and should be fixed.
 public class Main
 {
     public static void main( String[] args ) throws IOException
     {
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
+        System.out.println(" ============ ");
+        for (Statement s: statementList) {
+            System.out.println(s.toString());
+        }
 
         IAnalysisFramework sign = new Sign();
-        System.out.println("+++++++++++++++++++++++++++++++++");
-        CFG cfg = CFG.constructCFG(statementList);
-        System.out.println("+++++++++++++++++++++++++++++++++");
+        CFG cfg = CFG.constructCFG(statementList, sign);
         ILattice lattice = new SignLattice(sign.getProgramParameters(cfg), sign.initialElement());
-        System.out.println("+++++++++++++++++++++++++++++++++");
-        CFG.addTransferFunctions(cfg, sign, lattice);
-        System.out.println("+++++++++++++++++++++++++++++++++");
         Analysis analysis = new Analysis(new NaiveEngine(cfg, lattice));
-        System.out.println("+++++++++++++++++++++++++++++++++");
-        analysis.run();
     }
 }
 
