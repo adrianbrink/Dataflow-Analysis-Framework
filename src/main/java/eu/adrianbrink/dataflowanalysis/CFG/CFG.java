@@ -1,5 +1,6 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
+import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
@@ -12,26 +13,16 @@ import java.util.List;
 public class CFG {
     private List<CFGNode> cfgNodes;
 
-    public CFG(List<CFGNode> cfgNodes, List<Statement> statements) {
-        this.cfgNodes = cfgNodes;
-        CFG.constructCFG(cfgNodes, statements);
-    }
-
-    public List<CFGNode> getCfgNodes() {
+    public List<CFGNode> getCFGNodes() {
         return this.cfgNodes;
     }
 
-    public int getSize() {
-        int size = this.cfgNodes.size();
-        return size;
-    }
+    public static CFG constructCFG(List<Statement> statements, IAnalysisFramework framework) {
+        List<CFGNode> cfgNodes = new ArrayList<>();
 
-    public CFGNode getCFGNode(int index) {
-        CFGNode cfgNode = this.cfgNodes.get(index);
-        return cfgNode;
-    }
+        CFG cfg = new CFG();
+        cfg.cfgNodes = cfgNodes;
 
-    private static void constructCFG(List<CFGNode> cfgNodes, List<Statement> statements) {
         // create EntryNode
         CFGNode entryNode = new CFGNode(null);
         // add EntryNode to cfgNodes
@@ -57,6 +48,8 @@ public class CFG {
         for (CFGNode node : exitNodeList) {
             node.setPrevious(previousNodes);
         }
+
+        return cfg;
     }
 
     private static List<CFGNode> expandStatement(List<CFGNode> cfgNodes, List<CFGNode> previousNodes, AST statement) {

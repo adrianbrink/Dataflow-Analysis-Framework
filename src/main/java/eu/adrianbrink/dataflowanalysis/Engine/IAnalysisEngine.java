@@ -1,4 +1,4 @@
-package eu.adrianbrink.dataflowanalysis.Analysis.Engine;
+package eu.adrianbrink.dataflowanalysis.Engine;
 
 /**
  * Created by sly on 30/01/2017.

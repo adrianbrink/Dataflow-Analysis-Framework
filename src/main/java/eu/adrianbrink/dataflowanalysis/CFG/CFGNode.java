@@ -1,9 +1,11 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
+import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.AST;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by sly on 26/01/2017.
@@ -14,6 +16,7 @@ public class CFGNode {
     private List<CFGNode> next = new ArrayList<>();
     // TODO: Find a more general name for this
     private AST statementOrExpression;
+    private Function<LatticeElement, LatticeElement> transferFunction;
 
     public CFGNode(AST statementOrExpression) {
         this.statementOrExpression = statementOrExpression;
@@ -37,5 +40,13 @@ public class CFGNode {
 
     public List<CFGNode> getPrevious() {
         return this.previous;
+    }
+
+    public void setTransferFunction(Function<LatticeElement, LatticeElement> transferFunction) {
+        this.transferFunction = transferFunction;
+    }
+
+    public Function<LatticeElement, LatticeElement> getTransferFunction() {
+        return this.transferFunction;
     }
 }
