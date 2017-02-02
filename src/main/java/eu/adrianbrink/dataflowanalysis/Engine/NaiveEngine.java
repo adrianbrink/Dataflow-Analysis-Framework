@@ -37,7 +37,7 @@ public class NaiveEngine implements IAnalysisEngine {
     private void runTransferFunctions() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
             Function<LatticeElement, LatticeElement> transferFunction = node.getTransferFunction();
-            LatticeElement latticeElement = transferFunction.apply(node.getIn().getLatticeElement(node.getParameter());
+            LatticeElement latticeElement = transferFunction.apply(node.getIn().getLatticeElement(node.getParameter()));
             node.getOut().setLatticeElement(node.getParameter(), latticeElement);
         }
     }

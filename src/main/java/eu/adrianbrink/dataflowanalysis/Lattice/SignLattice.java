@@ -41,7 +41,7 @@ public class SignLattice implements ILattice {
     }
 
     @Override
-    public ILattice newLattice() {
+    public ILattice newLattice(String parameter) {
         ILattice lattice = new SignLattice(this.programParameters, this.initialElement);
         return lattice;
     }

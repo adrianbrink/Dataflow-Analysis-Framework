@@ -13,7 +13,7 @@ When implementing your specific analysis you need to implement three functions:
  */
 public interface ILattice<A, B> {
 
-    public ILattice newLattice();
+    public ILattice newLattice(String parameter);
 
     public LatticeElement<A> meet(LatticeElement<A> one, LatticeElement<A> two);
 
