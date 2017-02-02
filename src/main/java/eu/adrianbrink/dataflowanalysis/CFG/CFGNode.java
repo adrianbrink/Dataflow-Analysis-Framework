@@ -13,13 +13,11 @@ import java.util.function.Function;
  */
 public class CFGNode {
     // TODO: Find a more general name for this
-    private AST statementOrExpression = null;
-    private List<CFGNode> previous = new ArrayList<>();
-    private List<CFGNode> next = new ArrayList<>();
-    private Function<LatticeElement, LatticeElement> transferFunction = null;
-    private ILattice in = null;
-    private ILattice out = null;
-    private String parameter = null;
+    private AST statementOrExpression;
+    private String parameter;
+    private Function<LatticeElement, LatticeElement> transferFunction;
+    private List<CFGNode> previous = new ArrayList<>(), next = new ArrayList<>();
+    private ILattice in, out;
 
     public CFGNode(AST statementOrExpression) {
         this.statementOrExpression = statementOrExpression;
