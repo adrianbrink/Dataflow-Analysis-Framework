@@ -1,37 +1,37 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
+import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
+import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
+import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by sly on 26/01/2017.
  */
-// TODO: Ideally the analysis class should not never interact with CFGNodes directly but only through the CFG class. I should try and hide that implementation from the client code.
 public class CFG {
     private List<CFGNode> cfgNodes;
 
-    public CFG(List<CFGNode> cfgNodes, List<Statement> statements) {
-        this.cfgNodes = cfgNodes;
-        CFG.constructCFG(cfgNodes, statements);
-    }
-
-    public List<CFGNode> getCfgNodes() {
+    public List<CFGNode> getCFGNodes() {
         return this.cfgNodes;
     }
 
-    public int getSize() {
-        int size = this.cfgNodes.size();
-        return size;
+    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
+        for (CFGNode node : cfg.getCFGNodes()) {
+            Function<LatticeElement, LatticeElement> transferFunction = framework.transferFunction(node, lattice);
+            node.setTransferFunction(transferFunction);
+        }
     }
 
-    public CFGNode getCFGNode(int index) {
-        CFGNode cfgNode = this.cfgNodes.get(index);
-        return cfgNode;
-    }
+    public static CFG constructCFG(List<Statement> statements) {
+        List<CFGNode> cfgNodes = new ArrayList<>();
 
-    private static void constructCFG(List<CFGNode> cfgNodes, List<Statement> statements) {
+        CFG cfg = new CFG();
+        cfg.cfgNodes = cfgNodes;
+
         // create EntryNode
         CFGNode entryNode = new CFGNode(null);
         // add EntryNode to cfgNodes
@@ -57,6 +57,8 @@ public class CFG {
         for (CFGNode node : exitNodeList) {
             node.setPrevious(previousNodes);
         }
+
+        return cfg;
     }
 
     private static List<CFGNode> expandStatement(List<CFGNode> cfgNodes, List<CFGNode> previousNodes, AST statement) {

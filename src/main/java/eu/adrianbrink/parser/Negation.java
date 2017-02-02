@@ -4,13 +4,13 @@ public class Negation extends BoolExpression {
     public final BoolExpression b;
 
     public Negation(int line, BoolExpression b) {
-	super(line);
-	this.b = b;
+		super(line);
+		this.b = b;
     }
 
     void pretty(Printer p) {
-	p.print("!");
-	b.pretty(p);
+		p.print("!");
+		b.pretty(p);
     }
 	
 	@Override

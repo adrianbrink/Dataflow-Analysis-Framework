@@ -5,17 +5,17 @@ public class Multiplication extends Expression {
     public final Expression e2;
 
     public Multiplication(int line, Expression e1, Expression e2) {
-	super(line);
-	this.e1 = e1;
-	this.e2 = e2;
+		super(line);
+		this.e1 = e1;
+		this.e2 = e2;
     }
 
     void pretty(Printer p) {
-	p.print("(");
-	e1.pretty(p);
-	p.print(" * ");
-	e2.pretty(p);
-	p.print(")");
+		p.print("(");
+		e1.pretty(p);
+		p.print(" * ");
+		e2.pretty(p);
+		p.print(")");
     }
 	
 	@Override

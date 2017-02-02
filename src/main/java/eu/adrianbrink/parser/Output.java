@@ -4,13 +4,13 @@ public class Output extends Statement {
     public final Expression e;
 
     public Output(int line, Expression e) {
-	super(line);
-	this.e = e;
+		super(line);
+		this.e = e;
     }
 
     void pretty(Printer p) {
-	p.print("output ");
-	e.pretty(p);
+		p.print("output ");
+		e.pretty(p);
     }
 	
 	

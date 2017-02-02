@@ -5,17 +5,17 @@ public class Conjunction extends BoolExpression {
     public final BoolExpression b2;
 
     public Conjunction(int line, BoolExpression b1, BoolExpression b2) {
-	super(line);
-	this.b1 = b1;
-	this.b2 = b2;
+		super(line);
+		this.b1 = b1;
+		this.b2 = b2;
     }
 
     void pretty(Printer p) {
-	p.print("(");
-	b1.pretty(p);
-	p.print(" && ");
-	b2.pretty(p);
-	p.print(")");
+		p.print("(");
+		b1.pretty(p);
+		p.print(" && ");
+		b2.pretty(p);
+		p.print(")");
     }
 	
 	@Override

@@ -1,27 +1,18 @@
 package eu.adrianbrink.dataflowanalysis.Analysis;
 
-import eu.adrianbrink.dataflowanalysis.Analysis.Engine.IAnalysisEngine;
-import eu.adrianbrink.dataflowanalysis.Analysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
+import eu.adrianbrink.dataflowanalysis.Engine.IAnalysisEngine;
 
 /**
- * Created by sly on 30/01/2017.
+ * Created by Adrian Brink on 30/01/2017.
  */
-
-// this class combines the Engine with the Framework and runs the different analyses.
 public class Analysis {
-    private IAnalysisFramework framework;
     private IAnalysisEngine engine;
-    private  ILattice lattice;
 
-
-    public Analysis(IAnalysisEngine engine, IAnalysisFramework framework, ILattice lattice) {
+    public Analysis(IAnalysisEngine engine) {
         this.engine = engine;
-        this.framework = framework;
-        this.lattice = lattice;
     }
 
     public void run() {
-        engine.run(framework, lattice);
+        engine.run();
     }
 }

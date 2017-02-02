@@ -1,9 +1,10 @@
 package eu.adrianbrink.dataflowanalysis;
 
-import eu.adrianbrink.dataflowanalysis.Analysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Analysis.Framework.Sign;
+import eu.adrianbrink.dataflowanalysis.Analysis.Analysis;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
-import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
+import eu.adrianbrink.dataflowanalysis.Engine.NaiveEngine;
+import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
+import eu.adrianbrink.dataflowanalysis.Framework.Sign;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
@@ -11,32 +12,29 @@ import eu.adrianbrink.parser.Statement;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hello world!
- *
+ * Created by Adrian Brink on 30/01/2017.
  */
-// TODO: The parser can't parse programs with an ending ; . This should work and should be fixed.
 public class Main
 {
     public static void main( String[] args ) throws IOException
     {
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
-        System.out.println(" ============ ");
-        for (Statement s: statementList) {
-            System.out.println(s.toString());
-        }
 
-        ArrayList<CFGNode> cfgNodes = new ArrayList<>();
-        CFG cfg = new CFG(cfgNodes, statementList);
-        System.out.println(" ============ ");
-        IAnalysisFramework signAnalysis = new Sign(cfg);
-        System.out.println(" ============ ");
-        ILattice signLattice = new SignLattice(signAnalysis.getProgramParameters());
-        System.out.println(" ============ ");
+        IAnalysisFramework sign = new Sign();
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        CFG cfg = CFG.constructCFG(statementList);
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        ILattice lattice = new SignLattice(sign.getProgramParameters(cfg), sign.initialElement());
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        CFG.addTransferFunctions(cfg, sign, lattice);
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        Analysis analysis = new Analysis(new NaiveEngine(cfg, lattice));
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        analysis.run();
     }
 }
 

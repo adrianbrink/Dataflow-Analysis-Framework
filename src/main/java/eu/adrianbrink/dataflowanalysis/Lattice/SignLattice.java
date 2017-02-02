@@ -6,54 +6,78 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by sly on 30/01/2017.
+ * Created by Adrian Brink on 30/01/2017.
  */
-public class SignLattice extends FiniteWidthLattice {
-    private BitSet bottom;
+public class SignLattice implements ILattice {
+    private Map<String, LatticeElement<BitSet>> lattice;
+    private Set<String> programParameters;
+    private LatticeElement<BitSet> initialElement;
 
-    public SignLattice(Set<String> programParameters) {
-        super(programParameters, 2);
+    public SignLattice(Set<String> programParameters, LatticeElement<BitSet> initialElement) {
+        this.programParameters = programParameters;
+        this.initialElement = initialElement;
 
-        this.bottom = new BitSet(2);
-        this.bottom.set(0, false);
-        this.bottom.set(0, false);
-    }
-
-    public SignLattice(Map<String, BitSet> lattice) {
-        super(lattice);
-    }
-
-    @Override
-    public void initialise() {
-        for (Object latticeForParameter : this.getLattice().entrySet()) {
-            Map.Entry<String, BitSet> entry = (Map.Entry) latticeForParameter;
-            entry.getValue().and(this.bottom);
+        Map<String, LatticeElement<BitSet>> lattice = new HashMap<>();
+        BitSet oldBitSet = initialElement.getElement();
+        for (String parameter : programParameters) {
+            BitSet newBitSet = (BitSet) oldBitSet.clone();
+            LatticeElement<BitSet> latticeElement = new LatticeElement<>(newBitSet);
+            lattice.put(parameter, latticeElement);
         }
+        this.lattice = lattice;
     }
 
-    @Override
-    public ILattice join(ILattice that) {
-        return null;
-    }
-
-    @Override
-    public ILattice meet(ILattice that) {
-        return null;
-    }
-
-    // this cast might seem unsafe, however I should only be calling this function from Sign.java.
     @Override
     public ILattice deepCopy() {
-        SignLattice oldSignLattice = (SignLattice) this.getLattice();
-        Map<String, BitSet> oldLatticeValues = oldSignLattice.getLattice();
-        Map<String, BitSet> newLatticeValues = new HashMap<>();
-        for (Map.Entry entry : oldLatticeValues.entrySet()) {
-            String oldKey = (String) entry.getKey();
-            BitSet oldBitSet = (BitSet) entry.getValue();
-            BitSet newBitSet = (BitSet) oldBitSet.clone();
-            newLatticeValues.put(oldKey, newBitSet);
+        SignLattice newLattice = new SignLattice(this.programParameters, this.initialElement);
+        Map<String, LatticeElement<BitSet>> newMap = new HashMap<>();
+        for (Map.Entry<String, LatticeElement<BitSet>> entry : this.lattice.entrySet()) {
+            String key = entry.getKey();
+            LatticeElement<BitSet> value = entry.getValue();
+            newMap.put(key, value);
         }
-        SignLattice newSignLattice = new SignLattice(newLatticeValues);
-        return newSignLattice;
+        newLattice.lattice = newMap;
+        return newLattice;
+    }
+
+    @Override
+    public ILattice newLattice() {
+        ILattice lattice = new SignLattice(this.programParameters, this.initialElement);
+        return lattice;
+    }
+
+    // bitwise or
+    @Override
+    public LatticeElement<BitSet> join(LatticeElement one, LatticeElement two) {
+        BitSet firstLatticeElement = (BitSet) one.getElement();
+        BitSet secondLatticeElement = (BitSet) two.getElement();
+        BitSet newBitSet = (BitSet) firstLatticeElement.clone();
+        newBitSet.or(secondLatticeElement);
+        LatticeElement<BitSet> newLatticeElement = new LatticeElement<>(newBitSet);
+        return newLatticeElement;
+    }
+
+    // bitwise and
+    @Override
+    public LatticeElement meet(LatticeElement one, LatticeElement two) {
+        BitSet firstLatticeElement = (BitSet) one.getElement();
+        BitSet secondLatticeElement = (BitSet) two.getElement();
+        BitSet newBitSet = (BitSet) firstLatticeElement.clone();
+        newBitSet.and(secondLatticeElement);
+        LatticeElement<BitSet> newLatticeElement = new LatticeElement<>(newBitSet);
+        return newLatticeElement;
+    }
+
+    @Override
+    public LatticeElement<BitSet> getLatticeElement(Object key) {
+        String keyString = (String) key;
+        LatticeElement<BitSet> element = this.lattice.get(keyString);
+        return element;
+    }
+
+    @Override
+    public void setLatticeElement(Object key, LatticeElement element) {
+        String keyString = (String) key;
+        this.lattice.put(keyString, element);
     }
 }
