@@ -5,8 +5,21 @@ import eu.abit.lattice.Lattice
 import eu.adrianbrink.dataflowanalysis.CFG.{CFG, CFGNode}
 
 /**
-  * Created by antreas on 2/2/17.
+  * A DFAnalysis starts with a control flow graph, dataflow constraints and a Lattice.
+  * @tparam A: Type parameter for the elements' type of the lattice.
   */
+@FunctionalInterface
 abstract class DFAnalysis[A] {
-  def run(cfg: CFG)(lattice: Lattice[A])(constraints: TransferFunction[A]): List[CFGNode]
+  /**
+    * Represents the algorithm that calculates the fixed point.
+    * @param cfg: The control flow graph.
+    * @param lattice: The lattice
+    * @param constraints: The data flow constraints.
+    * @return : List of CFGNode instances with the fixed point encapsulated in them
+    */
+  def computeFixPoint(cfg: CFG)(lattice: Lattice[A])(constraints: TransferFunction[A]): List[CFGNode]
+}
+
+object Test extends App {
+
 }

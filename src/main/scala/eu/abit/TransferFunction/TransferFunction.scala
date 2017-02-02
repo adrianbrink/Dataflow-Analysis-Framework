@@ -3,8 +3,6 @@ package eu.abit.TransferFunction
 import eu.abit.lattice.LatticeElement
 import eu.adrianbrink.parser._
 
-import scala.annotation.tailrec
-
 /*
   Represents the Transfer Function for each program point.
  */
@@ -32,7 +30,7 @@ abstract class TransferFunction[A] {
 object Test extends App {
 
   val ex2 = new Addition(6, new Variable(1, "x"), new Number(0, 10))
-  val ex1 = new Addition(6, new Variable(2, "y"), new Number(3, 12));
+  val ex1 = new Addition(6, new Variable(2, "y"), new Number(3, 12))
   val ex = new Addition(7, ex1, ex2)
 
   val previous = new LatticeElement[Expression](extractNonTrivialExpFrom(ex)(Set.empty))
