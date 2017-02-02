@@ -7,8 +7,8 @@ import eu.adrianbrink.parser.{Expression, Variable}
   elements by using the binary relation(op) defined over a Set (polymorphic type [A]).
   In addition, to instantiate a lattice its bottom element is needed.
 */
-abstract class Lattice[A](private val op: (LatticeElement[A], LatticeElement[A]) => LatticeElement[A],
-                          val bottom: LatticeElement[A]) {
+class Lattice[A](private val op: (LatticeElement[A], LatticeElement[A]) => LatticeElement[A],
+                          val bottom: LatticeElement[A] ) {
   def combine(x: LatticeElement[A], y: LatticeElement[A]): LatticeElement[A] = op(x, y)
 }
 
@@ -16,8 +16,9 @@ class LatticeElement[A](val element: Set[A])
 
 object Test extends App {
   val availExprLat: Lattice[Expression] =
-    new Lattice[Expression]((e, e1) => new LatticeElement[Expression](e.element.filter(e1.element.contains(_))), new
-        LatticeElement[Expression](Set.empty[Expression])){}
+    new Lattice[Expression]((e, e1) =>
+      new LatticeElement[Expression](e.element.intersect(e1.element)),
+                                      new LatticeElement[Expression](Set.empty[Expression]))
 
   val e1 = new LatticeElement[Expression](Set(new Variable(1, "ds")))
   val e2 = new LatticeElement[Expression](Set(new Variable(1, "ds")))
@@ -27,7 +28,7 @@ object Test extends App {
   val e4 = new LatticeElement[Int](Set(1))
   val e5 = new LatticeElement[Int](Set(1,2,3))
   val constant: Lattice[Int] = new Lattice[Int]((l1, l2) => new LatticeElement[Int](l1.element ++ l2.element), new
-      LatticeElement[Int] (Set.empty[Int])) {}
+      LatticeElement[Int] (Set.empty[Int]))
 
   val res: LatticeElement[Int] = constant.combine(e4, e5)
   val l = res.element
