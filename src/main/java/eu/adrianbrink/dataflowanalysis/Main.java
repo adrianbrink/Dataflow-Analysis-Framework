@@ -34,7 +34,7 @@ public class Main
         System.out.println("+++++++++++++++++++++++++++++++++");
         Analysis analysis = new Analysis(new NaiveEngine(cfg, lattice));
         System.out.println("+++++++++++++++++++++++++++++++++");
-        analysis.run();
+//        analysis.run();
     }
 }
 

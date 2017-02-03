@@ -7,10 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="aea" />
+        <module name="Dataflow Analysis Framework" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="aea" target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="Dataflow Analysis Framework" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

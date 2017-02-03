@@ -54,4 +54,4 @@
 
 ## Further Improvements
 ### Parser
-- it cannot parse statements that end with a semicolon
+- it cannot parse statements that end with a semicolonl

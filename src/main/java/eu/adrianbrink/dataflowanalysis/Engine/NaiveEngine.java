@@ -5,7 +5,6 @@ import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -29,15 +28,15 @@ public class NaiveEngine implements IAnalysisEngine {
 
     private void initialiseLattices() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
-            node.setIn(this.lattice.newLattice(node.getParameter()));
-            node.setOut(this.lattice.newLattice(node.getParameter()));
+            //node.setIn(this.lattice.newLattice(node.getParameter()));
+            //node.setOut(this.lattice.newLattice(node.getParameter()));
         }
     }
 
     private void runTransferFunctions() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
             Function<LatticeElement, LatticeElement> transferFunction = node.getTransferFunction();
-            LatticeElement latticeElement = transferFunction.apply(node.getIn().getLatticeElement(node.getParameter());
+            LatticeElement latticeElement = transferFunction.apply(node.getIn().getLatticeElement(node.getParameter()));
             node.getOut().setLatticeElement(node.getParameter(), latticeElement);
         }
     }
@@ -50,7 +49,7 @@ public class NaiveEngine implements IAnalysisEngine {
                 node.setIn(node.getIn().deepCopy());
             } else {
                 for (CFGNode previousNode : node.getPrevious()) {
-                    
+
                 }
             }
         }
