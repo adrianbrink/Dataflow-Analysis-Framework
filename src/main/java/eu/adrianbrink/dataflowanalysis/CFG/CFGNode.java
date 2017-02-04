@@ -1,6 +1,6 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.parser.AST;
 
 import java.util.ArrayList;
@@ -12,10 +12,11 @@ import java.util.function.Function;
  */
 public class CFGNode {
     // TODO: Find a more general name for this
-    private AST statementOrExpression = null;
+    private AST statementOrExpression;
     private List<CFGNode> previous = new ArrayList<>();
     private List<CFGNode> next = new ArrayList<>();
-    private Function<LatticeElement, LatticeElement> transferFunction = null;
+    private Function<EnvironmentLattice, EnvironmentLattice> transferFunction;
+    private CFGState cfgState;
 
     public CFGNode(AST statementOrExpression) {
         this.statementOrExpression = statementOrExpression;
@@ -41,11 +42,19 @@ public class CFGNode {
         return this.previous;
     }
 
-    public void setTransferFunction(Function<LatticeElement, LatticeElement> transferFunction) {
+    public Function<EnvironmentLattice, EnvironmentLattice> getTransferFunction() {
+        return this.transferFunction;
+    }
+
+    public void setTransferFunction(Function<EnvironmentLattice, EnvironmentLattice> transferFunction) {
         this.transferFunction = transferFunction;
     }
 
-    public Function<LatticeElement, LatticeElement> getTransferFunction() {
-        return this.transferFunction;
+    public void setCfgState(CFGState cfgState) {
+        this.cfgState = cfgState;
+    }
+
+    public CFGState getCfgState() {
+        return this.cfgState;
     }
 }

@@ -2,12 +2,11 @@ package eu.adrianbrink.dataflowanalysis.Framework;
 
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
+import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
 import eu.adrianbrink.parser.AST;
 import eu.adrianbrink.parser.Assignment;
 import eu.adrianbrink.parser.Expression;
-import eu.adrianbrink.parser.Number;
 
 import java.util.BitSet;
 import java.util.HashSet;
@@ -17,46 +16,35 @@ import java.util.function.Function;
 /**
  * Created by Adrian Brink on 29/01/2017.
  */
-public class SignAnalysis implements IAnalysisFramework {
-
-    public Function<LatticeElement<BitSet>, LatticeElement<BitSet>> transferFunction(CFGNode node, ILattice lattice) {
-        // first check whether it is an assignment
-        // for SignAnalysis only assignments matter
-        if (node.getStatementOrExpression() instanceof Assignment) {
-            Expression expression = ((Assignment) node.getStatementOrExpression()).e;
-            // check which expressions are relevant for SignAnalysis
-            // bool expressions, conjunctions, disjunctions, equality, negation are not relevant
-            // relevant: number, addition, multiplication, variable
-            if (expression instanceof Number) {
-                if (((Number) expression).getN() >= 0) {
-                    return (LatticeElement<BitSet> one) -> {
-                        BitSet plusBitSet = new BitSet();
-                        plusBitSet.set(0, true);
-                        plusBitSet.set(1, false);
-                        LatticeElement<BitSet> two = new LatticeElement<>(plusBitSet);
-                        LatticeElement<BitSet> newLatticeElement = lattice.join(one, two);
-                        return newLatticeElement;
-                    };
-                } else {
-                    return (LatticeElement<BitSet> one) -> {
-                        BitSet minusBitSet = new BitSet();
-                        minusBitSet.set(0, false);
-                        minusBitSet.set(1, true);
-                        LatticeElement<BitSet> two = new LatticeElement<>(minusBitSet);
-                        LatticeElement<BitSet> newLatticeElement = lattice.join(one, two);
-                        return newLatticeElement;
-                    };
-                }
-            } else {
-                return (LatticeElement<BitSet> one) -> {
-                    return one;
+// user implemented
+public class SignAnalysis implements IAnalysisFramework<EnvironmentLattice> {
+    @Override
+    public Function<EnvironmentLattice, EnvironmentLattice> transferFunction(CFGNode cfgNode) {
+        AST statementOrExpression = cfgNode.getStatementOrExpression();
+        if (statementOrExpression instanceof Assignment) {
+            String variable = ((Assignment) statementOrExpression).x;
+            Expression expression = ((Assignment) statementOrExpression).e;
+            if (SignAnalysis.eval(expression) >= 0) {
+                return (EnvironmentLattice one) -> {
+                    BitSet newBitSet = new BitSet();
+                    newBitSet.set(0, true);
+                    EnvironmentLattice two = one.join(one);
+                    SignLattice lattice = new SignLattice();
+                    lattice.element = newBitSet;
+                    two.environment.put(variable, lattice);
+                    return two;
                 };
             }
+        } else {
+            return (EnvironmentLattice one) -> {
+                EnvironmentLattice two = one.join(one);
+                return two;
+            };
         }
         return null;
     }
 
-    public Set<String> getProgramParameters(CFG cfg) {
+    public Set<String> programParameters(CFG cfg) {
         Set<String> programParameters = new HashSet<>();
         for (CFGNode node : cfg.getCFGNodes()) {
             AST assignmentOrExpression = node.getStatementOrExpression();
@@ -67,12 +55,7 @@ public class SignAnalysis implements IAnalysisFramework {
         return programParameters;
     }
 
-    @Override
-    public LatticeElement<BitSet> initialElement() {
-        BitSet bitSet = new BitSet();
-        bitSet.set(0, false);
-        bitSet.set(0, false);
-        LatticeElement<BitSet> latticeElement = new LatticeElement<>(bitSet);
-        return latticeElement;
+    private static int eval(Expression expression) {
+        return 0;
     }
 }

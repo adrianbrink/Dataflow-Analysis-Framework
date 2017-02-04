@@ -11,9 +11,11 @@ When implementing your specific analysis you need to implement three functions:
 /**
  * Created by sly on 29/01/2017.
  */
-public interface ILattice<A, B> {
+public interface ILattice<A> {
 
-    public LatticeElement<A> meet(LatticeElement<A> one, LatticeElement<A> two);
+    // glb
+    // A meet(A that);
 
-    public LatticeElement<A> join(LatticeElement<A> one, LatticeElement<A> two);
+    // lub
+    A join(A that);
 }

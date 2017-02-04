@@ -3,7 +3,6 @@ package eu.adrianbrink.dataflowanalysis.Framework;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -22,12 +21,7 @@ When implementing your specific analysis you need to implement three functions:
 /**
  * Created by Adrian Brink on 30/01/2017.
  */
-public interface IAnalysisFramework<A, B> {
-
-    public Set<A> getProgramParameters(CFG cfg);
-
-    public Function<LatticeElement<B>, LatticeElement<B>> transferFunction(CFGNode node, ILattice lattice);
-
-    public LatticeElement<B> initialElement();
-
+public interface IAnalysisFramework<A extends ILattice> {
+    Function<A, A> transferFunction(CFGNode cfgNode);
+    Set programParameters(CFG cfg);
 }

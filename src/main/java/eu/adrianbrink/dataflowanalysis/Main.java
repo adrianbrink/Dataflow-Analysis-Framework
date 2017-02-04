@@ -5,8 +5,6 @@ import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.Engine.NaiveEngine;
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.dataflowanalysis.Framework.SignAnalysis;
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
 import eu.adrianbrink.parser.Statement;
 
@@ -28,13 +26,15 @@ public class Main
         System.out.println("+++++++++++++++++++++++++++++++++");
         CFG cfg = CFG.constructCFG(statementList);
         System.out.println("+++++++++++++++++++++++++++++++++");
-        ILattice lattice = new SignLattice(sign.getProgramParameters(cfg), sign.initialElement());
+        CFG.addTransferFunctions(cfg, sign);
+        //ILattice lattice = new SignLattice(sign.getProgramParameters(cfg), sign.initialElement());
         System.out.println("+++++++++++++++++++++++++++++++++");
-        CFG.addTransferFunctions(cfg, sign, lattice);
+        CFG.initialiseCFGState(cfg, sign);
         System.out.println("+++++++++++++++++++++++++++++++++");
-        Analysis analysis = new Analysis(new NaiveEngine(cfg, lattice));
+        Analysis analysis = new Analysis(new NaiveEngine(cfg));
         System.out.println("+++++++++++++++++++++++++++++++++");
-//        analysis.run();
+        analysis.run();
+        System.out.println("+++++++++++++++++++++++++++++++++");
     }
 }
 
