@@ -17,7 +17,7 @@ import java.util.function.Function;
 /**
  * Created by Adrian Brink on 29/01/2017.
  */
-public class Sign implements IAnalysisFramework {
+public class SignAnalysis implements IAnalysisFramework {
 
     public Function<LatticeElement<BitSet>, LatticeElement<BitSet>> transferFunction(CFGNode node, ILattice lattice) {
         // first check whether it is an assignment
@@ -62,7 +62,6 @@ public class Sign implements IAnalysisFramework {
             AST assignmentOrExpression = node.getStatementOrExpression();
             if (assignmentOrExpression instanceof Assignment) {
                 programParameters.add(((Assignment) assignmentOrExpression).x);
-                node.setParameter(((Assignment) assignmentOrExpression).x);
             }
         }
         return programParameters;

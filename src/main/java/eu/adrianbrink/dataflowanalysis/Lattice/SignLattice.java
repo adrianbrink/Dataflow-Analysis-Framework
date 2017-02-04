@@ -27,25 +27,6 @@ public class SignLattice implements ILattice {
         this.lattice = lattice;
     }
 
-    @Override
-    public ILattice deepCopy() {
-        SignLattice newLattice = new SignLattice(this.programParameters, this.initialElement);
-        Map<String, LatticeElement<BitSet>> newMap = new HashMap<>();
-        for (Map.Entry<String, LatticeElement<BitSet>> entry : this.lattice.entrySet()) {
-            String key = entry.getKey();
-            LatticeElement<BitSet> value = entry.getValue();
-            newMap.put(key, value);
-        }
-        newLattice.lattice = newMap;
-        return newLattice;
-    }
-
-    @Override
-    public ILattice newLattice() {
-        ILattice lattice = new SignLattice(this.programParameters, this.initialElement);
-        return lattice;
-    }
-
     // bitwise or
     @Override
     public LatticeElement<BitSet> join(LatticeElement one, LatticeElement two) {
@@ -66,18 +47,5 @@ public class SignLattice implements ILattice {
         newBitSet.and(secondLatticeElement);
         LatticeElement<BitSet> newLatticeElement = new LatticeElement<>(newBitSet);
         return newLatticeElement;
-    }
-
-    @Override
-    public LatticeElement<BitSet> getLatticeElement(Object key) {
-        String keyString = (String) key;
-        LatticeElement<BitSet> element = this.lattice.get(keyString);
-        return element;
-    }
-
-    @Override
-    public void setLatticeElement(Object key, LatticeElement element) {
-        String keyString = (String) key;
-        this.lattice.put(keyString, element);
     }
 }

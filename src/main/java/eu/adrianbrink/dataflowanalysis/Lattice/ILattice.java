@@ -13,15 +13,7 @@ When implementing your specific analysis you need to implement three functions:
  */
 public interface ILattice<A, B> {
 
-    public ILattice newLattice();
-
     public LatticeElement<A> meet(LatticeElement<A> one, LatticeElement<A> two);
 
     public LatticeElement<A> join(LatticeElement<A> one, LatticeElement<A> two);
-
-    public LatticeElement<A> getLatticeElement(B key);
-
-    public void setLatticeElement(B key, LatticeElement<A> element);
-
-    public ILattice deepCopy();
 }

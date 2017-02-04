@@ -4,7 +4,7 @@ import eu.adrianbrink.dataflowanalysis.Analysis.Analysis;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.Engine.NaiveEngine;
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Framework.Sign;
+import eu.adrianbrink.dataflowanalysis.Framework.SignAnalysis;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
@@ -24,7 +24,7 @@ public class Main
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
 
-        IAnalysisFramework sign = new Sign();
+        IAnalysisFramework sign = new SignAnalysis();
         System.out.println("+++++++++++++++++++++++++++++++++");
         CFG cfg = CFG.constructCFG(statementList);
         System.out.println("+++++++++++++++++++++++++++++++++");

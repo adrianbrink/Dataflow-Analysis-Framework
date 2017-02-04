@@ -1,13 +1,9 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
-import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by sly on 26/01/2017.
@@ -19,12 +15,12 @@ public class CFG {
         return this.cfgNodes;
     }
 
-    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
-        for (CFGNode node : cfg.getCFGNodes()) {
-            Function<LatticeElement, LatticeElement> transferFunction = framework.transferFunction(node, lattice);
-            node.setTransferFunction(transferFunction);
-        }
-    }
+//    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
+//        for (CFGNode node : cfg.getCFGNodes()) {
+//            Function<LatticeElement, LatticeElement> transferFunction = framework.transferFunction(node, lattice);
+//            node.setTransferFunction(transferFunction);
+//        }
+//    }
 
     public static CFG constructCFG(List<Statement> statements) {
         List<CFGNode> cfgNodes = new ArrayList<>();

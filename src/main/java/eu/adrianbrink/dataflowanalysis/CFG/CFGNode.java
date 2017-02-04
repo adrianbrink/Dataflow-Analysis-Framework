@@ -1,6 +1,5 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
-import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.AST;
 
@@ -17,9 +16,6 @@ public class CFGNode {
     private List<CFGNode> previous = new ArrayList<>();
     private List<CFGNode> next = new ArrayList<>();
     private Function<LatticeElement, LatticeElement> transferFunction = null;
-    private ILattice in = null;
-    private ILattice out = null;
-    private String parameter = null;
 
     public CFGNode(AST statementOrExpression) {
         this.statementOrExpression = statementOrExpression;
@@ -51,29 +47,5 @@ public class CFGNode {
 
     public Function<LatticeElement, LatticeElement> getTransferFunction() {
         return this.transferFunction;
-    }
-
-    public void setIn(ILattice in) {
-        this.in = in;
-    }
-
-    public ILattice getIn() {
-        return this.in;
-    }
-
-    public void setOut(ILattice out) {
-        this.out = out;
-    }
-
-    public ILattice getOut() {
-        return this.out;
-    }
-
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
-    }
-
-    public String getParameter() {
-        return this.parameter;
     }
 }
