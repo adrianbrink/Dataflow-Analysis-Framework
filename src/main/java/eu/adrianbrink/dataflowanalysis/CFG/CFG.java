@@ -1,12 +1,13 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -19,10 +20,20 @@ public class CFG {
         return this.cfgNodes;
     }
 
-    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework, ILattice lattice) {
-        for (CFGNode node : cfg.getCFGNodes()) {
-            Function<LatticeElement, LatticeElement> transferFunction = framework.transferFunction(node, lattice);
-            node.setTransferFunction(transferFunction);
+    public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework) {
+        for (CFGNode cfgNode : cfg.getCFGNodes()) {
+            Function<ILattice, ILattice> transferFunction = framework.transferFunction(cfgNode);
+            cfgNode.setTransferFunction(transferFunction);
+        }
+    }
+
+    public static void initialiseCFGState(CFG cfg, IAnalysisFramework framework) {
+        Set<String> programParameters = framework.programParameters(cfg);
+        for (CFGNode cfgNode : cfg.getCFGNodes()) {
+            EnvironmentLattice in = new EnvironmentLattice(programParameters);
+            EnvironmentLattice out = new EnvironmentLattice(programParameters);
+            CFGState cfgState = new CFGState(in, out);
+            cfgNode.setCfgState(cfgState);
         }
     }
 

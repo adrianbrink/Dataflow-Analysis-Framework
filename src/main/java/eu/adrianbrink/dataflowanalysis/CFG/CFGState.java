@@ -1,5 +1,6 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 /**
@@ -20,8 +21,11 @@ public class CFGState {
         return this.in;
     }
 
-
     public ILattice getOut() {
         return this.out;
+    }
+
+    public void setOut(ILattice out) {
+        this.out = out;
     }
 }

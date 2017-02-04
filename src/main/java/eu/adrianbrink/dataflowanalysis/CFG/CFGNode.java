@@ -1,7 +1,7 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.LatticeElement;
 import eu.adrianbrink.parser.AST;
 
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ import java.util.function.Function;
 public class CFGNode {
     // TODO: Find a more general name for this
     private AST statementOrExpression;
-    private String parameter;
-    private Function<LatticeElement, LatticeElement> transferFunction;
-    private List<CFGNode> previous = new ArrayList<>(), next = new ArrayList<>();
-    private ILattice in, out;
+    private List<CFGNode> previous = new ArrayList<>();
+    private List<CFGNode> next = new ArrayList<>();
+    private Function<ILattice, ILattice> transferFunction;
+    private CFGState cfgState;
 
     public CFGNode(AST statementOrExpression) {
         this.statementOrExpression = statementOrExpression;
@@ -43,35 +43,23 @@ public class CFGNode {
         return this.previous;
     }
 
-    public void setTransferFunction(Function<LatticeElement, LatticeElement> transferFunction) {
-        this.transferFunction = transferFunction;
-    }
-
-    public Function<LatticeElement, LatticeElement> getTransferFunction() {
+    public Function<ILattice, ILattice> getTransferFunction() {
         return this.transferFunction;
     }
 
-    public void setIn(ILattice in) {
-        this.in = in;
+    public void setTransferFunction(Function<ILattice, ILattice> transferFunction) {
+        this.transferFunction = transferFunction;
     }
 
-    public ILattice getIn() {
-        return this.in;
+    public void setCfgState(CFGState cfgState) {
+        this.cfgState = cfgState;
     }
 
-    public void setOut(ILattice out) {
-        this.out = out;
+    public CFGState getCfgState() {
+        return this.cfgState;
     }
 
-    public ILattice getOut() {
-        return this.out;
-    }
-
-    public void setParameter(String parameter) {
-        this.parameter = parameter;
-    }
-
-    public String getParameter() {
-        return this.parameter;
+    public boolean isEntryPoint() {
+        return this.getPrevious().isEmpty();
     }
 }
