@@ -5,5 +5,5 @@ package eu.adrianbrink.dataflowanalysis.Engine;
  */
 public interface IAnalysisEngine {
 
-    public void run();
+    void run();
 }

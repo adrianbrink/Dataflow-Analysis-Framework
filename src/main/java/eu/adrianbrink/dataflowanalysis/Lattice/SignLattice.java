@@ -9,7 +9,6 @@ import java.util.BitSet;
 public class SignLattice implements ILattice<SignLattice> {
     public BitSet element;
 
-    @Override
     public SignLattice join(SignLattice that) {
         BitSet oldBitSet = this.element;
         BitSet newBitSet = (BitSet) oldBitSet.clone();
@@ -17,5 +16,10 @@ public class SignLattice implements ILattice<SignLattice> {
         SignLattice signLattice = new SignLattice();
         signLattice.element = newBitSet;
         return signLattice;
+    }
+
+    @Override
+    public boolean isEquals(SignLattice that) {
+        return element.equals(that.element);
     }
 }

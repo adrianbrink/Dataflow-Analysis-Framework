@@ -2,6 +2,7 @@ package eu.adrianbrink.dataflowanalysis.CFG;
 
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
+import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 import eu.adrianbrink.parser.*;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CFG {
 
     public static void addTransferFunctions(CFG cfg, IAnalysisFramework framework) {
         for (CFGNode cfgNode : cfg.getCFGNodes()) {
-            Function<EnvironmentLattice, EnvironmentLattice> transferFunction = framework.transferFunction(cfgNode);
+            Function<ILattice, ILattice> transferFunction = framework.transferFunction(cfgNode);
             cfgNode.setTransferFunction(transferFunction);
         }
     }

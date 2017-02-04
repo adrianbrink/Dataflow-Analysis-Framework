@@ -13,9 +13,7 @@ When implementing your specific analysis you need to implement three functions:
  */
 public interface ILattice<A> {
 
-    // glb
-    // A meet(A that);
-
-    // lub
     A join(A that);
+    boolean isEquals(A that);
+
 }

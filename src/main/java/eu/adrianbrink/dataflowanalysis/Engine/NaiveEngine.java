@@ -2,12 +2,10 @@ package eu.adrianbrink.dataflowanalysis.Engine;
 
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
-import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
-import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
+import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -25,17 +23,17 @@ public class NaiveEngine implements IAnalysisEngine {
     public void run() {
         do {
             this.runTransferFunctions();
-            System.out.println("xxxx");
             this.updateLattices();
         } while (!isFixedPoint);
+        System.out.println("xxx");
     }
 
 
     private void runTransferFunctions() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
-            Function<EnvironmentLattice, EnvironmentLattice> transferFunction = node.getTransferFunction();
-            EnvironmentLattice in = node.getCfgState().getIn();
-            EnvironmentLattice out = transferFunction.apply(in);
+            Function<ILattice, ILattice> transferFunction = node.getTransferFunction();
+            ILattice in = node.getCfgState().getIn();
+            ILattice out = transferFunction.apply(in);
             node.getCfgState().setOut(out);
         }
     }
@@ -43,36 +41,17 @@ public class NaiveEngine implements IAnalysisEngine {
     private void updateLattices() {
         boolean isFixed = true;
         for (CFGNode node : this.cfg.getCFGNodes()) {
-            if (node.getPrevious().isEmpty()) {
-                continue;
-            } else {
-                List<EnvironmentLattice> outLattices = new ArrayList<>();
+            if (!node.isEntryPoint()) {
+                List<ILattice> outLattices = new ArrayList<>();
                 for (CFGNode cfgNode : node.getPrevious()) {
                     outLattices.add(cfgNode.getCfgState().getOut());
                 }
-                if (outLattices.size() == 1) {
-                    EnvironmentLattice newOut = outLattices.get(0).join(outLattices.get(0));
-                    isFixed &= this.isEqual(newOut, node.getCfgState().getIn());
-                    node.getCfgState().setIn(newOut);
-                } else {
-                    EnvironmentLattice newOut = outLattices.get(0).join(outLattices.get(1));
-                    isFixed &= this.isEqual(newOut, node.getCfgState().getIn());
-                    node.getCfgState().setIn(newOut);
-                }
+                int index = outLattices.size() - 1;
+                ILattice newOut = (ILattice) outLattices.get(0).join(outLattices.get(index));
+                isFixed &= newOut.isEquals(node.getCfgState().getIn());
+                node.getCfgState().setIn(newOut);
             }
         }
         isFixedPoint = isFixed;
-    }
-
-    private boolean isEqual(EnvironmentLattice out, EnvironmentLattice in) {
-        for (Map.Entry entry : out.environment.entrySet()) {
-            String key = (String) entry.getKey();
-            SignLattice outLattice = (SignLattice) entry.getValue();
-            SignLattice inLattice = in.environment.get(key);
-            if (!outLattice.element.equals(inLattice.element)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

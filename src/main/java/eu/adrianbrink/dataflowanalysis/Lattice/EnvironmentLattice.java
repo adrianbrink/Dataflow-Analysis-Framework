@@ -31,13 +31,20 @@ public class EnvironmentLattice implements ILattice<EnvironmentLattice> {
         Map<String, SignLattice> newEnvironment = new HashMap();
         newLattice.environment = newEnvironment;
 
-        for (Map.Entry<String, SignLattice> entry : this.environment.entrySet()) {
-            String key = entry.getKey();
-            SignLattice value = entry.getValue();
+        for (String key : this.environment.keySet()) {
             SignLattice thatValue = that.environment.get(key);
-            SignLattice newA = value.join(thatValue);
+            SignLattice newA = environment.get(key).join(thatValue);
             newEnvironment.put(key,newA);
         }
         return newLattice;
     }
+
+    @Override
+    public boolean isEquals(EnvironmentLattice that) {
+        for (String k : environment.keySet())
+            if (!environment.get(k).isEquals(that.environment.get(k)))
+                return false;
+        return true;
+    }
+
 }

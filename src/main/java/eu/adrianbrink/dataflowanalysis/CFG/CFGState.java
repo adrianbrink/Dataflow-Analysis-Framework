@@ -1,6 +1,7 @@
 package eu.adrianbrink.dataflowanalysis.CFG;
 
 import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
+import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 /**
  * Created by sly on 30/01/2017.
@@ -8,27 +9,27 @@ import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 
 // This tracks the in and out lattices for every node in the CFG
 public class CFGState {
-    private EnvironmentLattice in;
-    private EnvironmentLattice out;
+    private ILattice in;
+    private ILattice out;
 
-    public CFGState(EnvironmentLattice in, EnvironmentLattice out) {
+    public CFGState(ILattice in, ILattice out) {
         this.in = in;
         this.out = out;
     }
 
-    public EnvironmentLattice getIn() {
+    public ILattice getIn() {
         return this.in;
     }
 
-    public void setIn(EnvironmentLattice in) {
+    public void setIn(ILattice in) {
         this.in = in;
     }
 
-    public EnvironmentLattice getOut() {
+    public ILattice getOut() {
         return this.out;
     }
 
-    public void setOut(EnvironmentLattice out) {
+    public void setOut(ILattice out) {
         this.out = out;
     }
 }

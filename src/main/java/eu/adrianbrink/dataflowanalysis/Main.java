@@ -19,6 +19,7 @@ public class Main
 {
     public static void main( String[] args ) throws IOException
     {
+
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
 
