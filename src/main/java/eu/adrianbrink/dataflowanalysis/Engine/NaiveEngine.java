@@ -12,6 +12,7 @@ import java.util.function.Function;
  * Created by Adrian Brink on 30/01/2017.
  */
 public class NaiveEngine implements IAnalysisEngine {
+
     private CFG cfg;
     private boolean isFixedPoint, isBackwards;
     public NaiveEngine(CFG cfg, boolean isBackwards) {
@@ -33,7 +34,6 @@ public class NaiveEngine implements IAnalysisEngine {
             } while (!isFixedPoint);
         }
     }
-
 
     private void runTransferFunctionsBackward() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
