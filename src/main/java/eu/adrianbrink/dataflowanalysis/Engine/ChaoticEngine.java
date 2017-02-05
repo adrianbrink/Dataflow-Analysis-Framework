@@ -2,6 +2,7 @@ package eu.adrianbrink.dataflowanalysis.Engine;
 
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
+import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ public class ChaoticEngine implements IAnalysisEngine {
 
     private CFG cfg;
     private boolean isFixedPoint, isBackwards;
-    public ChaoticEngine(CFG cfg, boolean isBackwards) {
+    public ChaoticEngine(CFG cfg, IAnalysisFramework framework) {
         this.cfg = cfg;
-        this.isBackwards = isBackwards;
+        this.isBackwards = framework.isBackward();
     }
 
     @Override
@@ -58,6 +59,7 @@ public class ChaoticEngine implements IAnalysisEngine {
         boolean isFixed = true;
         for (CFGNode node : cfg.getCFGNodes()) {
             if (!node.isExitPoint()) {
+                Function<ILattice, ILattice> transferFunction = node.getTransferFunction();
                 List<ILattice> inLattices = new ArrayList<>();
                 for (CFGNode next : node.getNext()) {
                     inLattices.add(next.getCfgState().getIn());
@@ -67,7 +69,6 @@ public class ChaoticEngine implements IAnalysisEngine {
                 isFixed &= newIn.isEquals(node.getCfgState().getOut());
                 node.getCfgState().setOut(newIn);
 
-                Function<ILattice, ILattice> transferFunction = node.getTransferFunction();
                 ILattice out = node.getCfgState().getOut();
                 ILattice in = transferFunction.apply(out);
                 node.getCfgState().setIn(in);

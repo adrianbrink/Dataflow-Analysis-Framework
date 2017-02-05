@@ -19,6 +19,11 @@ import java.util.function.Function;
 public class LivenessAnalysis implements IAnalysisFramework<LivenessLattice> {
 
     @Override
+    public boolean isBackward() {
+        return true;
+    }
+
+    @Override
     public Function<LivenessLattice, LivenessLattice> transferFunction(CFGNode cfgNode) {
         return  l -> new LivenessLattice(helper(cfgNode.getStatementOrExpression(), l));
     }

@@ -17,6 +17,12 @@ import java.util.function.Function;
  */
 // user implemented
 public class SignAnalysis implements IAnalysisFramework<EnvironmentLattice> {
+
+    @Override
+    public boolean isBackward() {
+        return false;
+    }
+
     @Override
     public Function<EnvironmentLattice, EnvironmentLattice> transferFunction(CFGNode cfgNode) {
         AST statementOrExpression = cfgNode.getStatementOrExpression();

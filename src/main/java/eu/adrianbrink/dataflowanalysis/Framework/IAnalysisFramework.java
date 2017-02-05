@@ -25,4 +25,6 @@ public interface IAnalysisFramework<A extends ILattice> {
     Function<A, A> transferFunction(CFGNode cfgNode);
 
     A getInitialLattice(CFG cfg);
+
+    boolean isBackward();
 }

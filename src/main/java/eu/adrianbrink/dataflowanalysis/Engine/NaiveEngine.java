@@ -2,6 +2,7 @@ package eu.adrianbrink.dataflowanalysis.Engine;
 
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
+import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ public class NaiveEngine implements IAnalysisEngine {
 
     private CFG cfg;
     private boolean isFixedPoint, isBackwards;
-    public NaiveEngine(CFG cfg, boolean isBackwards) {
+    public NaiveEngine(CFG cfg, IAnalysisFramework framework) {
         this.cfg = cfg;
-        this.isBackwards = isBackwards;
+        this.isBackwards = framework.isBackward();
     }
 
     @Override
