@@ -51,6 +51,10 @@ public class CFGNode {
         this.transferFunction = transferFunction;
     }
 
+    public boolean isExitPoint() {
+        return this.getNext().isEmpty();
+    }
+
     public void setCfgState(CFGState cfgState) {
         this.cfgState = cfgState;
     }

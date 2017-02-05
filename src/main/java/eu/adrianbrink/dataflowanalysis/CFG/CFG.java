@@ -28,11 +28,8 @@ public class CFG {
     }
 
     public static void initialiseCFGState(CFG cfg, IAnalysisFramework framework) {
-        Set<String> programParameters = framework.programParameters(cfg);
         for (CFGNode cfgNode : cfg.getCFGNodes()) {
-            EnvironmentLattice in = new EnvironmentLattice(programParameters);
-            EnvironmentLattice out = new EnvironmentLattice(programParameters);
-            CFGState cfgState = new CFGState(in, out);
+            CFGState cfgState = new CFGState(framework.getInitialLattice(cfg), framework.getInitialLattice(cfg));
             cfgNode.setCfgState(cfgState);
         }
     }

@@ -23,5 +23,6 @@ When implementing your specific analysis you need to implement three functions:
  */
 public interface IAnalysisFramework<A extends ILattice> {
     Function<A, A> transferFunction(CFGNode cfgNode);
-    Set programParameters(CFG cfg);
+
+    A getInitialLattice(CFG cfg);
 }

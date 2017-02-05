@@ -13,23 +13,38 @@ import java.util.function.Function;
  */
 public class NaiveEngine implements IAnalysisEngine {
     private CFG cfg;
-    private boolean isFixedPoint = false;
-
-    public NaiveEngine(CFG cfg) {
+    private boolean isFixedPoint, isBackwards;
+    public NaiveEngine(CFG cfg, boolean isBackwards) {
         this.cfg = cfg;
+        this.isBackwards = isBackwards;
     }
 
     @Override
     public void run() {
-        do {
-            this.runTransferFunctions();
-            this.updateLattices();
-        } while (!isFixedPoint);
-        System.out.println("xxx");
+        if (!isBackwards) {
+            do {
+                this.runTransferFunctionsForward();
+                this.updateLatticesForward();
+            } while (!isFixedPoint);
+        } else {
+            do {
+                this.runTransferFunctionsBackward();
+                this.updateLatticesBackward();
+            } while (!isFixedPoint);
+        }
     }
 
 
-    private void runTransferFunctions() {
+    private void runTransferFunctionsBackward() {
+        for (CFGNode node : this.cfg.getCFGNodes()) {
+            Function<ILattice, ILattice> transferFunction = node.getTransferFunction();
+            ILattice out = node.getCfgState().getOut();
+            ILattice in = transferFunction.apply(out);
+            node.getCfgState().setIn(in);
+        }
+    }
+
+    private void runTransferFunctionsForward() {
         for (CFGNode node : this.cfg.getCFGNodes()) {
             Function<ILattice, ILattice> transferFunction = node.getTransferFunction();
             ILattice in = node.getCfgState().getIn();
@@ -38,7 +53,7 @@ public class NaiveEngine implements IAnalysisEngine {
         }
     }
 
-    private void updateLattices() {
+    private void updateLatticesForward() {
         boolean isFixed = true;
         for (CFGNode node : this.cfg.getCFGNodes()) {
             if (!node.isEntryPoint()) {
@@ -53,5 +68,23 @@ public class NaiveEngine implements IAnalysisEngine {
             }
         }
         isFixedPoint = isFixed;
+    }
+
+    private void updateLatticesBackward() {
+        boolean isFixed = true;
+        for (CFGNode node : this.cfg.getCFGNodes()) {
+            if (!node.isExitPoint()) {
+                List<ILattice> inLattices = new ArrayList<>();
+                for (CFGNode cfgNode : node.getNext()) {
+                    inLattices.add(cfgNode.getCfgState().getIn());
+                }
+                int index = inLattices.size() - 1;
+                ILattice newIn = (ILattice) inLattices.get(0).join(inLattices.get(index));
+                isFixed &= newIn.isEquals(node.getCfgState().getOut());
+                node.getCfgState().setOut(newIn);
+            }
+        }
+        isFixedPoint = isFixed;
+
     }
 }

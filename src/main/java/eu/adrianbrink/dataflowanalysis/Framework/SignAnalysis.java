@@ -40,8 +40,12 @@ public class SignAnalysis implements IAnalysisFramework<EnvironmentLattice> {
             return two;
         };
     }
+    @Override
+    public EnvironmentLattice getInitialLattice(CFG cfg) {
+        return new EnvironmentLattice(programParameters(cfg));
+    }
 
-    public Set<String> programParameters(CFG cfg) {
+    private Set<String> programParameters(CFG cfg) {
         Set<String> programParameters = new HashSet<>();
         for (CFGNode node : cfg.getCFGNodes()) {
             AST assignmentOrExpression = node.getStatementOrExpression();

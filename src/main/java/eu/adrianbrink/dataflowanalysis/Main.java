@@ -4,7 +4,7 @@ import eu.adrianbrink.dataflowanalysis.Analysis.Analysis;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.Engine.NaiveEngine;
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Framework.SignAnalysis;
+import eu.adrianbrink.dataflowanalysis.Framework.LivenessAnalysis;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
 import eu.adrianbrink.parser.Statement;
 
@@ -23,7 +23,7 @@ public class Main
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
 
-        IAnalysisFramework sign = new SignAnalysis();
+        IAnalysisFramework sign = new LivenessAnalysis();
         System.out.println("+++++++++++++++++++++++++++++++++");
         CFG cfg = CFG.constructCFG(statementList);
         System.out.println("+++++++++++++++++++++++++++++++++");
@@ -32,7 +32,7 @@ public class Main
         System.out.println("+++++++++++++++++++++++++++++++++");
         CFG.initialiseCFGState(cfg, sign);
         System.out.println("+++++++++++++++++++++++++++++++++");
-        Analysis analysis = new Analysis(new NaiveEngine(cfg));
+        Analysis analysis = new Analysis(new NaiveEngine(cfg, true));
         System.out.println("+++++++++++++++++++++++++++++++++");
         analysis.run();
         System.out.println("+++++++++++++++++++++++++++++++++");
