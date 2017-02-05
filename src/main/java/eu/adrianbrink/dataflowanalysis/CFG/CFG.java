@@ -106,6 +106,9 @@ public class CFG {
             for (CFGNode node : trueBranch) {
                 node.setNext(whileNode);
             }
+            for (CFGNode node : whileNode) {
+                node.setPrevious(trueBranch);
+            }
             return whileNode;
         }
         // impossible to reach, since above all possible AST subclasses are handled

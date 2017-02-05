@@ -4,9 +4,8 @@ import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.SignLattice;
-import eu.adrianbrink.parser.AST;
-import eu.adrianbrink.parser.Assignment;
-import eu.adrianbrink.parser.Expression;
+import eu.adrianbrink.parser.*;
+import eu.adrianbrink.parser.Number;
 
 import java.util.BitSet;
 import java.util.HashSet;
@@ -24,24 +23,22 @@ public class SignAnalysis implements IAnalysisFramework<EnvironmentLattice> {
         if (statementOrExpression instanceof Assignment) {
             String variable = ((Assignment) statementOrExpression).x;
             Expression expression = ((Assignment) statementOrExpression).e;
-            if (SignAnalysis.eval(expression) >= 0) {
+
+            if ((expression instanceof Expression) && (!(expression instanceof BoolExpression))) {
                 return (EnvironmentLattice one) -> {
-                    BitSet newBitSet = new BitSet();
-                    newBitSet.set(0, true);
+                    BitSet bitSet = SignAnalysis.eval(expression, one);
                     EnvironmentLattice two = one.join(one);
                     SignLattice lattice = new SignLattice();
-                    lattice.element = newBitSet;
+                    lattice.element = bitSet;
                     two.environment.put(variable, lattice);
                     return two;
                 };
             }
-        } else {
-            return (EnvironmentLattice one) -> {
-                EnvironmentLattice two = one.join(one);
-                return two;
-            };
         }
-        return null;
+        return (EnvironmentLattice one) -> {
+            EnvironmentLattice two = one.join(one);
+            return two;
+        };
     }
 
     public Set<String> programParameters(CFG cfg) {
@@ -55,7 +52,52 @@ public class SignAnalysis implements IAnalysisFramework<EnvironmentLattice> {
         return programParameters;
     }
 
-    private static int eval(Expression expression) {
-        return 0;
+    private static BitSet eval(Expression expression, EnvironmentLattice lattice) {
+        if (expression instanceof Number) {
+            int number = ((Number) expression).getN();
+            if (number >= 0) {
+                BitSet bitSet = new BitSet();
+                bitSet.set(0, true);
+                bitSet.set(1, false);
+                return  bitSet;
+            } else {
+                BitSet bitSet = new BitSet();
+                bitSet.set(0, false);
+                bitSet.set(1, true);
+                return bitSet;
+            }
+        } else if (expression instanceof Addition) {
+            Expression expression1 = ((Addition) expression).e1;
+            Expression expression2 = ((Addition) expression).e2;
+            BitSet bitSet1 = SignAnalysis.eval(expression1, lattice);
+            BitSet bitSet2 = SignAnalysis.eval(expression2, lattice);
+            bitSet1.or(bitSet2);
+            return bitSet1;
+        } else if (expression instanceof Multiplication) {
+            Expression expression1 = ((Multiplication) expression).e1;
+            Expression expression2 = ((Multiplication) expression).e2;
+            BitSet bitSet1 = SignAnalysis.eval(expression1, lattice);
+            BitSet bitSet2 = SignAnalysis.eval(expression2, lattice);
+            BitSet minusBitSet = new BitSet();
+            minusBitSet.set(0, false);
+            minusBitSet.set(1, true);
+            if (bitSet1.equals(minusBitSet) && bitSet2.equals(minusBitSet)) {
+                BitSet plusBitSet = new BitSet();
+                plusBitSet.set(0, true);
+                plusBitSet.set(1, false);
+                return plusBitSet;
+            }
+            bitSet1.or(bitSet2);
+            return bitSet1;
+            // Variable
+        } else if (expression instanceof Variable) {
+            String variable = ((Variable) expression).id;
+            BitSet bitSet = lattice.environment.get(variable).element;
+            BitSet bitSet1 = (BitSet) bitSet.clone();
+            return bitSet1;
+        } else {
+            // never reachable
+            return null;
+        }
     }
 }
