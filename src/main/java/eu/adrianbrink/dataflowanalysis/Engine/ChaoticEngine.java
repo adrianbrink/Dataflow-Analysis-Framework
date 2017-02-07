@@ -16,9 +16,11 @@ public class ChaoticEngine implements IAnalysisEngine {
 
     private CFG cfg;
     private boolean isFixedPoint, isBackwards;
+    private IAnalysisFramework framework;
     public ChaoticEngine(CFG cfg, IAnalysisFramework framework) {
         this.cfg = cfg;
         this.isBackwards = framework.isBackward();
+        this.framework = framework;
     }
 
     @Override
@@ -42,8 +44,8 @@ public class ChaoticEngine implements IAnalysisEngine {
                 for (CFGNode prev : node.getPrevious()) {
                     outLattices.add(prev.getCfgState().getOut());
                 }
-                int index = outLattices.size() - 1;
-                ILattice newOut = (ILattice) outLattices.get(0).join(outLattices.get(index));
+                ILattice newOut=
+                        outLattices.stream().reduce(framework.getInitialLattice(cfg), (l1, l2) -> (ILattice)l1.join(l2));
                 isFixed &= newOut.isEquals(node.getCfgState().getIn());
                 node.getCfgState().setIn(newOut);
 
@@ -64,8 +66,8 @@ public class ChaoticEngine implements IAnalysisEngine {
                 for (CFGNode next : node.getNext()) {
                     inLattices.add(next.getCfgState().getIn());
                 }
-                int index = inLattices.size() - 1;
-                ILattice newIn = (ILattice) inLattices.get(0).join(inLattices.get(index));
+                ILattice newIn=
+                        inLattices.stream().reduce(framework.getInitialLattice(cfg), (l1, l2) -> (ILattice)l1.join(l2));
                 isFixed &= newIn.isEquals(node.getCfgState().getOut());
                 node.getCfgState().setOut(newIn);
 

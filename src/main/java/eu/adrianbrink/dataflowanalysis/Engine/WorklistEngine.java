@@ -3,6 +3,7 @@ package eu.adrianbrink.dataflowanalysis.Engine;
 import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.CFG.CFGNode;
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
+import eu.adrianbrink.dataflowanalysis.Lattice.EnvironmentLattice;
 import eu.adrianbrink.dataflowanalysis.Lattice.ILattice;
 
 import java.util.*;
@@ -15,11 +16,13 @@ public class WorklistEngine implements IAnalysisEngine {
     private CFG cfg;
     private boolean isBackward;
     private Queue<CFGNode> queue;
+    private IAnalysisFramework framework;
 
     public WorklistEngine(CFG cfg, IAnalysisFramework framework) {
         this.cfg = cfg;
         this.isBackward = framework.isBackward();
         this.queue = new LinkedList<>();
+        this.framework = framework;
     }
 
     @Override
@@ -66,8 +69,8 @@ public class WorklistEngine implements IAnalysisEngine {
         for (CFGNode prev : node.getPrevious()) {
             outLattices.add(prev.getCfgState().getOut());
         }
-        int index = outLattices.size() - 1;
-        ILattice newOut = (ILattice) outLattices.get(0).join(outLattices.get(index));
+        ILattice newOut=
+                outLattices.stream().reduce(framework.getInitialLattice(cfg), (l1, l2) -> (ILattice)l1.join(l2));
         node.getCfgState().setIn(newOut);
     }
 
@@ -85,8 +88,8 @@ public class WorklistEngine implements IAnalysisEngine {
         for (CFGNode next : node.getNext()) {
             inLattices.add(next.getCfgState().getIn());
         }
-        int index = inLattices.size() - 1;
-        ILattice newIn = (ILattice) inLattices.get(0).join(inLattices.get(index));
+        ILattice newIn =
+                inLattices.stream().reduce(framework.getInitialLattice(cfg), (l1, l2) -> (ILattice)l1.join(l2));
         node.getCfgState().setOut(newIn);
     }
 

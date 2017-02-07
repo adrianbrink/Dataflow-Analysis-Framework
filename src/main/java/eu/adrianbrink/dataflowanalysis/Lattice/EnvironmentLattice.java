@@ -46,7 +46,4 @@ public class EnvironmentLattice implements ILattice<EnvironmentLattice> {
                 return false;
         return true;
     }
-
-
-
 }

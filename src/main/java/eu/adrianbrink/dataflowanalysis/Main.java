@@ -26,18 +26,30 @@ public class Main
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
 
-        IAnalysisFramework framework = new SignAnalysis();
+        IAnalysisFramework framework = new LivenessAnalysis();
         System.out.println("+++++++++++++++++++++++++++++++++");
+
         CFG cfg = CFG.constructCFG(statementList);
-        System.out.println("+++++++++++++++++++++++++++++++++");
         CFG.addTransferFunctions(cfg, framework);
-        //ILattice lattice = new SignLattice(sign.getProgramParameters(cfg), sign.initialElement());
-        System.out.println("+++++++++++++++++++++++++++++++++");
         CFG.initialiseCFGState(cfg, framework);
+        Analysis chaotic = new Analysis(new ChaoticEngine(cfg, framework));
+        chaotic.run();
+
         System.out.println("+++++++++++++++++++++++++++++++++");
-        Analysis analysis = new Analysis(new WorklistEngine(cfg, framework));
+
+        cfg = CFG.constructCFG(statementList);
+        CFG.addTransferFunctions(cfg, framework);
+        CFG.initialiseCFGState(cfg, framework);
+        Analysis naive = new Analysis(new NaiveEngine(cfg, framework));
+        naive.run();
+
         System.out.println("+++++++++++++++++++++++++++++++++");
-        analysis.run();
+
+        CFG.addTransferFunctions(cfg, framework);
+        CFG.initialiseCFGState(cfg, framework);
+        Analysis worklist = new Analysis(new WorklistEngine(cfg, framework));
+        worklist.run();
+
         System.out.println("+++++++++++++++++++++++++++++++++");
     }
 }
