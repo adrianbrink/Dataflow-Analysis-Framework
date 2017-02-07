@@ -45,6 +45,7 @@ public class Main
 
         System.out.println("+++++++++++++++++++++++++++++++++");
 
+        cfg = CFG.constructCFG(statementList);
         CFG.addTransferFunctions(cfg, framework);
         CFG.initialiseCFGState(cfg, framework);
         Analysis worklist = new Analysis(new WorklistEngine(cfg, framework));
