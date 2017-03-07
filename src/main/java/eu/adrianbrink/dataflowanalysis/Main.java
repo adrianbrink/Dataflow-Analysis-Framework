@@ -5,9 +5,8 @@ import eu.adrianbrink.dataflowanalysis.CFG.CFG;
 import eu.adrianbrink.dataflowanalysis.Engine.ChaoticEngine;
 import eu.adrianbrink.dataflowanalysis.Engine.NaiveEngine;
 import eu.adrianbrink.dataflowanalysis.Engine.WorklistEngine;
+import eu.adrianbrink.dataflowanalysis.Framework.AvailableExpressionsAnalysis;
 import eu.adrianbrink.dataflowanalysis.Framework.IAnalysisFramework;
-import eu.adrianbrink.dataflowanalysis.Framework.LivenessAnalysis;
-import eu.adrianbrink.dataflowanalysis.Framework.SignAnalysis;
 import eu.adrianbrink.dataflowanalysis.utils.ParserHelper;
 import eu.adrianbrink.parser.Statement;
 
@@ -26,7 +25,7 @@ public class Main
         File exampleProgram = new File(System.getProperty("user.dir") + "/examples" + "/simple_while.txt");
         List<Statement> statementList = ParserHelper.parse(exampleProgram);
 
-        IAnalysisFramework framework = new LivenessAnalysis();
+        IAnalysisFramework framework = new AvailableExpressionsAnalysis();
         System.out.println("+++++++++++++++++++++++++++++++++");
 
         CFG cfg = CFG.constructCFG(statementList);

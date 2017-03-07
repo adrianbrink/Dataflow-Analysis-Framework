@@ -1,22 +1,28 @@
 package eu.adrianbrink.dataflowanalysis.Lattice;
 
+import eu.adrianbrink.dataflowanalysis.utils.SetUtil;
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
+import java.util.Collections;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
- * Created by antreas on 3/7/17.
+ * Lattice representation for Available Expressions analysis.
  */
+
+@Immutable
 public class AvailableExpressionLattice implements ILattice<AvailableExpressionLattice> {
-    final Set<String> availableExpr;
+    public final Set<String> availableExpr;
 
     public AvailableExpressionLattice(Set<String> availableExpr) {
-        this.availableExpr = availableExpr;
+        //Set<String> tmp = new TreeSet<>();
+        //tmp.addAll(availableExpr);
+        this.availableExpr = Collections.unmodifiableSet(availableExpr);
     }
 
     @Override
     public AvailableExpressionLattice join(AvailableExpressionLattice that) {
-        return new AvailableExpressionLattice(filter(availableExpr, that.availableExpr::contains));
+        return new AvailableExpressionLattice(SetUtil.filter(availableExpr, that.availableExpr::contains));
     }
 
     @Override
@@ -26,7 +32,4 @@ public class AvailableExpressionLattice implements ILattice<AvailableExpressionL
 
     }
 
-    public static<T> Set<T> filter(Set<T> set, Predicate<T> test) {
-        return set.stream().filter(test).collect(Collectors.toSet());
-    }
 }
