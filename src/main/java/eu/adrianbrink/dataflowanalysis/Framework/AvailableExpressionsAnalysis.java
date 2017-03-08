@@ -7,6 +7,7 @@ import eu.adrianbrink.dataflowanalysis.utils.SetUtil;
 import eu.adrianbrink.parser.*;
 import eu.adrianbrink.parser.Number;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,7 +21,7 @@ public class AvailableExpressionsAnalysis implements IAnalysisFramework<Availabl
     public AvailableExpressionLattice bottom;
     final private static boolean isBackwards = false;
     private final HashMap<String, Set<String>> cache = new HashMap<>();
-
+    private static final AvailableExpressionLattice empty = new AvailableExpressionLattice(Collections.EMPTY_SET);
     @Override
     public AvailableExpressionLattice getInitialLattice(CFG cfg) {
         if (bottom == null)
@@ -50,19 +51,22 @@ public class AvailableExpressionsAnalysis implements IAnalysisFramework<Availabl
 
     @Override
     public Function<AvailableExpressionLattice, AvailableExpressionLattice> transferFunction(CFGNode cfgNode) {
-        if (cfgNode.isExitPoint() || cfgNode.isEntryPoint())
+        if (cfgNode.isEntryPoint())
+            return in -> empty;
+        if (cfgNode.isExitPoint())
             return Function.identity();
         AST currentAST = cfgNode.getStatementOrExpression();
-        Set<String> availableExpressions = getSubExprIfCached(currentAST);
         if (currentAST instanceof Assignment) {
            String var = ((Assignment) currentAST).x;
            return in -> {
-               Set<String> out = SetUtil.filter(in.availableExpr, s -> !s.contains(var));
-               out.addAll(availableExpressions);
+               Set<String> availableExpressions = getSubExprIfCached(currentAST);
+               availableExpressions.addAll(in.availableExpr);
+               Set<String> out = SetUtil.filter(availableExpressions, s -> !s.contains(var));
                return new AvailableExpressionLattice(out);
            };
         }
         return  in -> {
+            Set<String> availableExpressions = getSubExprIfCached(currentAST);
             Set<String> out = new TreeSet<>();
             out.addAll(in.availableExpr);
             out.addAll(availableExpressions);
@@ -71,12 +75,7 @@ public class AvailableExpressionsAnalysis implements IAnalysisFramework<Availabl
     }
 
     private Set<String> getSubExprIfCached(AST ast) {
-        Set<String> res;
-        if ((res = cache.get(ast.toString())) == null) {
-            res = extractExpressionsFrom(ast);
-            cache.put(ast.toString(), res);
-        }
-        return res;
+            return extractExpressionsFrom(ast);
     }
 
     private Set<String> extractExpressionsFromStatement(Statement statement, Set<String> result) {

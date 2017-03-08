@@ -31,7 +31,7 @@ public class Main
         CFG cfg = CFG.constructCFG(statementList);
         CFG.addTransferFunctions(cfg, framework);
         CFG.initialiseCFGState(cfg, framework);
-        Analysis chaotic = new Analysis(new ChaoticEngine(cfg, framework));
+        Analysis chaotic = new Analysis(new NaiveEngine(cfg, framework));
         chaotic.run();
 
         System.out.println("+++++++++++++++++++++++++++++++++");

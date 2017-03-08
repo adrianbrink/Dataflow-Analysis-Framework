@@ -22,7 +22,7 @@ public class AvailableExpressionLattice implements ILattice<AvailableExpressionL
 
     @Override
     public AvailableExpressionLattice join(AvailableExpressionLattice that) {
-        return new AvailableExpressionLattice(SetUtil.filter(availableExpr, that.availableExpr::contains));
+        return new AvailableExpressionLattice(SetUtil.filter(availableExpr,  s -> that.availableExpr.contains(s)));
     }
 
     @Override
