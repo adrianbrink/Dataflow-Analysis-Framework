@@ -5,6 +5,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Lattice representation for Available Expressions analysis.
@@ -15,9 +16,9 @@ public class AvailableExpressionLattice implements ILattice<AvailableExpressionL
     public final Set<String> availableExpr;
 
     public AvailableExpressionLattice(Set<String> availableExpr) {
-        //Set<String> tmp = new TreeSet<>();
-        //tmp.addAll(availableExpr);
-        this.availableExpr = Collections.unmodifiableSet(availableExpr);
+        Set<String> tmp = new TreeSet<>();
+        tmp.addAll(availableExpr);
+        this.availableExpr = tmp;
     }
 
     @Override

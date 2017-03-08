@@ -67,10 +67,8 @@ public class AvailableExpressionsAnalysis implements IAnalysisFramework<Availabl
         }
         return  in -> {
             Set<String> availableExpressions = getSubExprIfCached(currentAST);
-            Set<String> out = new TreeSet<>();
-            out.addAll(in.availableExpr);
-            out.addAll(availableExpressions);
-            return new AvailableExpressionLattice(out);
+            availableExpressions.addAll(in.availableExpr);
+            return new AvailableExpressionLattice(availableExpressions);
         };
     }
 
