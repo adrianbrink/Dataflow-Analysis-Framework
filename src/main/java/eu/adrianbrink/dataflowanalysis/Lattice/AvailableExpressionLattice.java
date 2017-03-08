@@ -3,7 +3,6 @@ package eu.adrianbrink.dataflowanalysis.Lattice;
 import eu.adrianbrink.dataflowanalysis.utils.SetUtil;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
